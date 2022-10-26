@@ -1,0 +1,16 @@
+### Build System
+
+.gradle
+build/
+
+### IDEs
+
+# intellij
+.idea/
+out/
+
+# vscode
+.vscode/
+
+# fleet
+.fleet/
