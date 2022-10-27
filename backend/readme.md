@@ -6,4 +6,4 @@ The backend portion of Fairu, it handles user creation, file uploading, and file
 
 - [ ] Rate-limiting
 - [ ] Better security
-- [ ] Sessions?
+- [x] Sessions?
