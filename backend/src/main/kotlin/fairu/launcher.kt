@@ -1,5 +1,8 @@
 package fairu
 
+import aws.sdk.kotlin.services.s3.S3Client
+import aws.sdk.kotlin.services.s3.createBucket
+import aws.sdk.kotlin.services.s3.model.BucketCannedAcl
 import com.akuleshov7.ktoml.file.TomlFileReader
 import fairu.exception.RequestFailedException
 import fairu.routes.files.files
@@ -32,6 +35,7 @@ import naibu.encoding.Base64
 import naibu.encoding.decode
 import naibu.encoding.encode
 import naibu.ext.koin.get
+import naibu.ext.koin.inject
 import naibu.ext.ktor.server.plugins.logging.RequestLogging
 import naibu.ext.ktor.server.setupServer
 import naibu.io.order.BigEndian
@@ -46,7 +50,6 @@ import naibu.serialization.json.Json
 import org.koin.core.context.startKoin
 import org.koin.dsl.module
 import org.litote.kmongo.eq
-import org.noelware.remi.s3.S3StorageTrailer
 
 val log by logging("fairu.application")
 val configPath = System.getProperty("fairu.config-path") ?: "fairu.toml"
@@ -55,7 +58,7 @@ val configPath = System.getProperty("fairu.config-path") ?: "fairu.toml"
  * Fairu application.
  *
  * ## Details
- * - Storage:  S3 via Remi
+ * - Storage:  S3 via AWS-Kotlin-SDK
  * - Database: MongoDB
  * - Server:   Ktor
  *
@@ -78,8 +81,20 @@ suspend fun main() {
     }
 
     /* initialize storage trailer */
-    log.info { "* Initializing storage trailer" }
-    get<S3StorageTrailer>().init()
+    log.info { "* Creating S3 bucket '${config.s3.bucket}'" }
+    val s3 by inject<S3Client>()
+
+    // ensure configured bucket exists.
+    val buckets = s3.listBuckets().buckets
+        ?.map { it.name }
+        ?: emptyList()
+
+    if (config.s3.bucket !in buckets) {
+        s3.createBucket {
+            bucket = config.s3.bucket
+            acl    = BucketCannedAcl.PublicReadWrite
+        }
+    }
 
     /* load fonts */
     registerFonts()

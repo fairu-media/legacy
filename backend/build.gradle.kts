@@ -53,20 +53,23 @@ dependencies {
     implementation("org.litote.kmongo:kmongo-coroutine:4.7.1")
     implementation("org.litote.kmongo:kmongo-coroutine-serialization:4.7.1")
 
-    /* remi - storage handling library */
-    implementation(platform("org.noelware.remi:remi-bom:0.4.1-beta"))
-
-    implementation("org.noelware.remi:remi-core")
-    implementation("org.noelware.remi:remi-support-s3")
+    /* aws - s3 client */
+    implementation("aws.sdk.kotlin:s3:0.17.5-beta")
+    implementation("aws.smithy.kotlin:http-client-engine-ktor:0.12.9")
 
     /* tika - content type checking */
     implementation(platform("org.apache.tika:tika-bom:2.5.0"))
 
+    implementation("org.apache.tika:tika-core")
     implementation("org.apache.tika:tika-parsers-standard-package")
 
     /* ktor - server library */
     implementation(platform("io.ktor:ktor-bom:2.1.2"))
 
+    // client
+    implementation("io.ktor:ktor-client-cio")
+
+    // server
     implementation("io.ktor:ktor-server-core")
     implementation("io.ktor:ktor-server-cio")
 

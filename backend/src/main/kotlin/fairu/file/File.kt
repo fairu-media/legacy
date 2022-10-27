@@ -14,7 +14,6 @@ import kotlinx.serialization.json.JsonNames
 import naibu.ext.koin.get
 import naibu.time.now
 import org.litote.kmongo.eq
-import org.noelware.remi.s3.S3StorageTrailer
 
 @OptIn(ExperimentalSerializationApi::class)
 @Serializable
@@ -50,7 +49,7 @@ data class File(
     }
 
     override suspend fun delete(): Boolean {
-        get<S3StorageTrailer>().delete(fileName)
+//        get<S3StorageTrailer>().delete(fileName)
         return delete(File::id eq id) == 1L
     }
 }
