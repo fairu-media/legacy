@@ -1,4 +1,4 @@
-package fairu.mongo
+package fairu.utils.mongo
 
 import naibu.logging.logging
 import org.bson.conversions.Bson
@@ -50,12 +50,12 @@ open class DocumentClass<D : Document>(val collection: DatabaseCollection<D>) {
      *
      * @param filter The filter to use when removing the document.
      */
-    suspend fun remove(filter: Bson) {
-        try {
-            collection.deleteOne(filter)
-            log.debug { "$prefix Deleted an item using filter: $filter" }
-        } catch (ex: Throwable) {
-            log.error(ex) { "$prefix Exception occurred while deleting item from collection:" }
-        }
+    suspend fun delete(filter: Bson): Long = try {
+        val result = collection.deleteOne(filter)
+        log.debug { "$prefix Deleted an item using filter: $filter" }
+        result.deletedCount
+    } catch (ex: Throwable) {
+        log.error(ex) { "$prefix Exception occurred while deleting a document:" }
+        -1
     }
 }

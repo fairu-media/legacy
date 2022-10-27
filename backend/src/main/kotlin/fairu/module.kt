@@ -1,8 +1,8 @@
 package fairu
 
 import fairu.utils.Config
-import fairu.mongo.Database
-import fairu.mongo.DatabaseClient
+import fairu.utils.mongo.Database
+import fairu.utils.mongo.DatabaseClient
 import naibu.logging.logging
 import org.koin.dsl.bind
 import org.koin.dsl.module

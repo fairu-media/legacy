@@ -1,13 +1,11 @@
 package fairu.utils.auth
 
 import com.auth0.jwt.JWT
+import com.auth0.jwt.JWTCreator
 import com.auth0.jwt.algorithms.Algorithm
-import fairu.mongo.User
+import fairu.user.User
 import fairu.utils.Config
-import fairu.utils.ext.Date
 import naibu.ext.koin.get
-import naibu.time.now
-import kotlin.time.Duration.Companion.days
 
 object Token {
     private val algo: Algorithm by lazy {
@@ -22,10 +20,10 @@ object Token {
         .withIssuer(issuer)
         .build()
 
-    fun create(user: User): String = JWT.create()
+    fun create(user: User, block: JWTCreator.Builder.() -> Unit): String = JWT.create()
         .withAudience(audience)
         .withIssuer(issuer)
         .withSubject(user.id.toString())
-        .withExpiresAt(Date(now() + 7.days))
+        .apply(block)
         .sign(algo)
 }

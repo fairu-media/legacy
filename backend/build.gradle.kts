@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "fairu"
-version = "1.0"
+version = "2.0"
 
 application {
     mainClass.set("fairu.LauncherKt")
@@ -30,6 +30,9 @@ dependencies {
     // logging
     implementation("io.github.microutils:kotlin-logging:3.0.2")
 
+    /* scrimage - image generation */
+    implementation("com.sksamuel.scrimage:scrimage-core:4.0.32")
+
     /* koin - dependency injection */
     implementation("io.insert-koin:koin-core:3.2.2")
 
@@ -39,10 +42,12 @@ dependencies {
 
     /* naibu - utilities */
     implementation("naibu.stdlib:naibu-core:1.0-RC.5")
+    implementation("naibu.stdlib:naibu-io:1.0-RC.5")
 
     // extensions
     implementation("naibu.stdlib:naibu-koin:1.0-RC.5")
     implementation("naibu.stdlib:naibu-ktor-server:1.0-RC.5")
+    implementation("naibu.stdlib:naibu-scrimage:1.0-RC.5")
 
     /* kmongo - database connectivity */
     implementation("org.litote.kmongo:kmongo-coroutine:4.7.1")
@@ -52,8 +57,12 @@ dependencies {
     implementation(platform("org.noelware.remi:remi-bom:0.4.1-beta"))
 
     implementation("org.noelware.remi:remi-core")
-    implementation("org.noelware.remi:remi-support-fs")
     implementation("org.noelware.remi:remi-support-s3")
+
+    /* tika - content type checking */
+    implementation(platform("org.apache.tika:tika-bom:2.5.0"))
+
+    implementation("org.apache.tika:tika-parsers-standard-package")
 
     /* ktor - server library */
     implementation(platform("io.ktor:ktor-bom:2.1.2"))
@@ -66,6 +75,8 @@ dependencies {
     implementation("io.ktor:ktor-server-partial-content")
     implementation("io.ktor:ktor-server-sessions")
     implementation("io.ktor:ktor-server-content-negotiation")
+    implementation("io.ktor:ktor-server-default-headers")
+    implementation("io.ktor:ktor-server-status-pages")
 
     implementation("io.ktor:ktor-serialization-kotlinx-json")
 

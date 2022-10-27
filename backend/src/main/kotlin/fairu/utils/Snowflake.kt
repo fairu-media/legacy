@@ -13,6 +13,7 @@ import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
+import naibu.time.now
 
 @Serializable(with = Snowflake.Serializer::class)
 class Snowflake : Comparable<Snowflake> {
@@ -131,11 +132,24 @@ class Snowflake : Comparable<Snowflake> {
         val validValues: ULongRange = ULong.MIN_VALUE..Long.MAX_VALUE.toULong() // 0..9223372036854775807
         val max: Snowflake = Snowflake(validValues.last)
 
+        fun generate(): Snowflake = Snowflake(now())
+
         private val maxMillisecondsSinceDiscordEpoch = max.millisecondsSinceDiscordEpoch
     }
 
+    object LongSerializer : KSerializer<Snowflake> {
+        override val descriptor: SerialDescriptor = Long.serializer().descriptor
+
+        override fun deserialize(decoder: Decoder): Snowflake =
+            Snowflake(decoder.decodeInline(descriptor).decodeLong().toULong())
+
+        override fun serialize(encoder: Encoder, value: Snowflake) {
+            encoder.encodeInline(descriptor).encodeLong(value.value.toLong())
+        }
+    }
+
     internal object Serializer : KSerializer<Snowflake> {
-        override val descriptor: SerialDescriptor = ULong.serializer().descriptor
+        override val descriptor: SerialDescriptor = String.serializer().descriptor
 
         override fun deserialize(decoder: Decoder): Snowflake =
             Snowflake(decoder.decodeString().toULong())

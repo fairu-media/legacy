@@ -1,13 +1,21 @@
 package fairu
 
 import com.akuleshov7.ktoml.file.TomlFileReader
-import fairu.utils.auth.Token
-import fairu.utils.Config
+import fairu.exception.RequestFailedException
 import fairu.routes.files.files
 import fairu.routes.image
 import fairu.routes.login
 import fairu.routes.users.users
+import fairu.user.Session
+import fairu.user.UserPrincipal
+import fairu.user.access.AccessToken
+import fairu.user.session.UserSession
+import fairu.utils.BasicResponse
+import fairu.utils.Config
+import fairu.utils.Snowflake
 import fairu.utils.Version
+import fairu.utils.auth.Token
+import fairu.utils.awt.registerFonts
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
@@ -15,17 +23,29 @@ import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
 import io.ktor.server.cio.*
 import io.ktor.server.plugins.contentnegotiation.*
+import io.ktor.server.plugins.defaultheaders.*
+import io.ktor.server.plugins.statuspages.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import io.ktor.server.sessions.*
+import naibu.encoding.Base64
+import naibu.encoding.decode
+import naibu.encoding.encode
 import naibu.ext.koin.get
 import naibu.ext.ktor.server.plugins.logging.RequestLogging
 import naibu.ext.ktor.server.setupServer
+import naibu.io.order.BigEndian
+import naibu.io.order.getULong
+import naibu.io.slice.asSlice
+import naibu.io.toByteArray
 import naibu.logging.logging
 import naibu.math.toIntSafe
+import naibu.monads.expect
 import naibu.serialization.DefaultFormats
 import naibu.serialization.json.Json
 import org.koin.core.context.startKoin
 import org.koin.dsl.module
+import org.litote.kmongo.eq
 import org.noelware.remi.s3.S3StorageTrailer
 
 val log by logging("fairu.application")
@@ -61,6 +81,9 @@ suspend fun main() {
     log.info { "* Initializing storage trailer" }
     get<S3StorageTrailer>().init()
 
+    /* load fonts */
+    registerFonts()
+
     /* setup server */
     val server = setupServer(CIO) {
         production = true
@@ -77,21 +100,80 @@ suspend fun main() {
                 json(DefaultFormats.Json)
             }
 
+            install(StatusPages) {
+                exception<RequestFailedException> { call, cause ->
+                    call.respond(
+                        cause.statusCode,
+                        BasicResponse(mapOf("message" to cause.message), false)
+                    )
+                }
+            }
+
+            install(DefaultHeaders) {
+                header("Server", "Fairu")
+
+                header("X-Powered-By", "catboys <3")
+                header("X-Fairu-Version", Version.FULL)
+            }
+
+            install(Sessions) {
+                cookie<Session>("fairu_session") {
+                    serializer = object : SessionSerializer<Session> {
+                        override fun serialize(session: Session): String = session.id.value
+                            .toByteArray()
+                            .encode(Base64)
+                            .decodeToString()
+
+                        override fun deserialize(text: String): Session {
+                            val id = BigEndian.getULong(
+                                text.decode(Base64)
+                                    .expect("Couldn't decode base64 session bytes")
+                                    .asSlice()
+                            )
+
+                            return Session(Snowflake(id))
+                        }
+                    }
+                }
+            }
+
             authentication {
-                jwt {
+                session<Session>("session") {
+                    validate { session ->
+                        UserSession.get(session.id)?.let {
+                            val user = it.user()!!
+                            UserPrincipal.Session(user, it)
+                        }
+                    }
+
+                    challenge {
+                        call.respond(HttpStatusCode.Unauthorized)
+                    }
+                }
+
+                jwt("access_token") {
                     realm = "fairu"
 
                     verifier(Token.verifier)
 
                     validate { cred ->
-                        if (cred.payload.subject.isNullOrBlank()) {
+                        val tokenId = cred.payload.claims["token_id"]
+                            ?.asString()
+                            ?.let { Snowflake(it) }
+
+                        if (cred.subject.isNullOrBlank() || tokenId == null) {
                             null
                         } else {
-                            JWTPrincipal(cred.payload)
+                            val token = AccessToken.find(AccessToken::id eq tokenId)
+                                ?: return@validate null
+
+                            UserPrincipal.Token(token.user()!!, token)
                         }
                     }
 
-                    challenge { scheme, realm -> call.respond(HttpStatusCode.Unauthorized) }
+                    challenge { _, _ ->
+                        call.respond(HttpStatusCode.Unauthorized)
+                    }
                 }
             }
 
