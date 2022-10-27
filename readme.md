@@ -8,7 +8,7 @@ An image-hosting service written.
 > Manages users, image uploading and serving
  
 > [**/frontend**](/frontend)  
-> Web UI made Astro for browsing uploaded images 
+> Web UI made w/ React for browsing uploaded images 
 
 ---
 
