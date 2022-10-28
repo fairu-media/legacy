@@ -4,20 +4,20 @@ The frontend portion of Fairu, it's made with NextJS, TailwindCSS, and Blueprint
 
 ## TODO
 
-- [ ] /users/@me
-  - [ ] /
-  - [ ] /settings
-    - [ ] /account
-    - [ ] /tokens
-  - [ ] /files
-    - [ ] /
+- [ ] `/users/@me`
+  - [ ] `/`
+  - [ ] `/settings`
+    - [ ] `/account`
+    - [ ] `/tokens`
+  - [ ] `/files`
+    - [ ] `/`
       - [ ] Card View
         - [ ] Delete Images
         - [x] View Images
       - [ ] Table View
         - [ ] Sorting
         - [ ] Multi-select
-    - [ ] /upload
+    - [ ] `/upload`
 
 ---
 
