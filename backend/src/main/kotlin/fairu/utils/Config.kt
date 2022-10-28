@@ -8,7 +8,7 @@ data class Config(val fairu: Fairu) {
     @Serializable
     data class Fairu(
         @SerialName("allowed-usernames")
-        val allowedUsernames: List<String>,
+        val allowedUsernames: List<String>? = null,
         val server: Server = Server(),
         val s3: S3,
         val jwt: Jwt,

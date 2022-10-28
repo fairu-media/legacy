@@ -5,6 +5,8 @@ import fairu.utils.ext.respond
 import io.ktor.server.application.*
 import io.ktor.server.routing.*
 import io.ktor.util.pipeline.*
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.encodeToJsonElement
 import naibu.ext.into
@@ -20,10 +22,14 @@ fun User.toJson() = DefaultFormats.Json.encodeToJsonElement(this)
     .filterNot { it.key == "password" }
     .toJsonObject()
 
+@Serializable
+data class GetUsersResponse(@SerialName("total_users") val totalUsers: Long)
+
 fun Route.users() = route("/users") {
     // GET /
     get {
-        respond(mapOf("message" to "Welcome to /users"))
+        val users = User.collection.countDocuments()
+        respond(GetUsersResponse(users))
     }
 
     // PUT /

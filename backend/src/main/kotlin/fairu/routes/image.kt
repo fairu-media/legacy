@@ -13,6 +13,7 @@ import com.sksamuel.scrimage.nio.ImmutableImageLoader
 import com.sksamuel.scrimage.nio.PngWriter
 import fairu.exception.failure
 import fairu.file.File
+import fairu.user.access.authenticatedUser
 import fairu.utils.Config
 import fairu.utils.awt.RUBIK_REGULAR
 import fairu.utils.awt.SOURCE_CODE_PRO_BOLD
@@ -21,6 +22,7 @@ import fairu.utils.awt.pxToPt
 import io.ktor.http.*
 import io.ktor.http.content.*
 import io.ktor.server.application.*
+import io.ktor.server.auth.*
 import io.ktor.server.plugins.partialcontent.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -58,64 +60,70 @@ fun Route.image() = route("/{$FILE_NAME}") {
     val client = get<S3Client>()
     val config = get<Config.Fairu>()
 
-    get {
-        val fileName = call.parameters[FILE_NAME]
-            ?: failure(HttpStatusCode.NotFound, "Invalid or missing 'file_name' parameter.")
+    authenticate("session", "access_token", optional = true) {
+        get {
+            val fileName = call.parameters[FILE_NAME]
+                ?: failure(HttpStatusCode.NotFound, "Invalid or missing 'file_name' parameter.")
 
-        val file = File.find(File::fileName eq fileName)
-        if (file == null) {
-            val image = missingBase.toCanvas()
-                .draw(Text(fileName, 50, 300 / 2 - 50, Color.WHITE, SOURCE_CODE_PRO_BOLD.deriveFont(60.pxToPt)))
-                .image
-                .forWriter(PngWriter())
-                .stream()
+            val file = File.find(File::fileName eq fileName)
+            if (file == null) {
+                val image = missingBase.toCanvas()
+                    .draw(Text(fileName, 50, 300 / 2 - 50, Color.WHITE, SOURCE_CODE_PRO_BOLD.deriveFont(60.pxToPt)))
+                    .image
+                    .forWriter(PngWriter())
+                    .stream()
 
-            call.respond(object : OutgoingContent.ReadChannelContent() {
-                override val contentType: ContentType = ContentType.Image.PNG
+                call.respond(object : OutgoingContent.ReadChannelContent() {
+                    override val contentType: ContentType = ContentType.Image.PNG
 
-                override fun readFrom(): ByteReadChannel = image.toByteReadChannel()
-            })
-        } else {
-            /* fetch file from the S3 bucket */
-            val s3obj = try {
-                client.headObject {
+                    override fun readFrom(): ByteReadChannel = image.toByteReadChannel()
+                })
+            } else {
+                /* fetch file from the S3 bucket */
+                val s3obj = try {
+                    client.headObject {
+                        bucket = config.s3.bucket
+                        key    = fileName
+                    }
+                } catch (ex: NotFound) {
+                    null
+                }
+
+                if (s3obj == null) {
+                    /* remove file from the database if its S3 object has been deleted. */
+                    file.delete()
+                    failure(HttpStatusCode.NotFound, "Missing an S3 object for file '$fileName' (${file.id}).")
+                }
+
+                /* check if anonymous view or non-owner view */
+                val user = call.authenticatedUser
+                if (user == null || user.id != file.userId) {
+                    /* increment file hit counter */
+                    File.collection.findOneAndUpdate(
+                        File::id eq file.id,
+                        inc(File::hits, 1)
+                    )
+                }
+
+                /* respond with file stream */
+                val ct = ContentType.parse(file.contentType)
+                client.getObject(GetObjectRequest {
                     bucket = config.s3.bucket
                     key    = fileName
-                }
-            } catch (ex: NotFound) {
-                null
-            }
+                }) {
+                    when (val body = it.body) {
+                        is ByteStream.Buffer -> call.respondBytes(body.bytes(), ct)
 
-            if (s3obj == null) {
-                /* remove file from the database if its S3 object has been deleted. */
-                file.delete()
-                failure(HttpStatusCode.NotFound, "Missing an S3 object for file '$fileName' (${file.id}).")
-            }
+                        is ByteStream.OneShotStream -> call.respondBytesWriter(ct) {
+                            body.readFrom().transferTo(this)
+                        }
 
-            /* increment file hit counter */
-            File.collection.findOneAndUpdate(
-                File::id eq file.id,
-                inc(File::hits, 1)
-            )
+                        is ByteStream.ReplayableStream -> call.respondBytesWriter(ct) {
+                            body.newReader().transferTo(this)
+                        }
 
-            /* respond with file stream */
-            val ct = ContentType.parse(file.contentType)
-            client.getObject(GetObjectRequest {
-                bucket = config.s3.bucket
-                key    = fileName
-            }) {
-                when (val body = it.body) {
-                    is ByteStream.Buffer -> call.respondBytes(body.bytes(), ct)
-
-                    is ByteStream.OneShotStream -> call.respondBytesWriter(ct) {
-                        body.readFrom().transferTo(this)
+                        else -> failure(HttpStatusCode.InternalServerError, "S3 did not return file stream")
                     }
-
-                    is ByteStream.ReplayableStream -> call.respondBytesWriter(ct) {
-                        body.newReader().transferTo(this)
-                    }
-
-                    else -> failure(HttpStatusCode.InternalServerError, "S3 did not return file stream")
                 }
             }
         }

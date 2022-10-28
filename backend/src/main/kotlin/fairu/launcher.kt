@@ -7,7 +7,7 @@ import com.akuleshov7.ktoml.file.TomlFileReader
 import fairu.exception.RequestFailedException
 import fairu.routes.files.files
 import fairu.routes.image
-import fairu.routes.login
+import fairu.routes.session
 import fairu.routes.users.users
 import fairu.user.Session
 import fairu.user.UserPrincipal
@@ -26,6 +26,7 @@ import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
 import io.ktor.server.cio.*
 import io.ktor.server.plugins.contentnegotiation.*
+import io.ktor.server.plugins.cors.routing.*
 import io.ktor.server.plugins.defaultheaders.*
 import io.ktor.server.plugins.statuspages.*
 import io.ktor.server.response.*
@@ -34,7 +35,6 @@ import io.ktor.server.sessions.*
 import naibu.encoding.Base64
 import naibu.encoding.decode
 import naibu.encoding.encode
-import naibu.ext.koin.get
 import naibu.ext.koin.inject
 import naibu.ext.ktor.server.plugins.logging.RequestLogging
 import naibu.ext.ktor.server.setupServer
@@ -92,7 +92,7 @@ suspend fun main() {
     if (config.s3.bucket !in buckets) {
         s3.createBucket {
             bucket = config.s3.bucket
-            acl    = BucketCannedAcl.PublicReadWrite
+            acl = BucketCannedAcl.PublicReadWrite
         }
     }
 
@@ -109,6 +109,24 @@ suspend fun main() {
         server {
             install(RequestLogging) {
                 loggerName = "fairu.server.requests"
+            }
+
+            install(CORS) {
+                allowMethod(HttpMethod.Get)
+                allowMethod(HttpMethod.Put)
+                allowMethod(HttpMethod.Post)
+                allowMethod(HttpMethod.Head)
+                allowMethod(HttpMethod.Patch)
+                allowMethod(HttpMethod.Delete)
+                allowMethod(HttpMethod.Options)
+
+                allowHost("127.0.0.1",          schemes = listOf("http"))
+                allowHost("154.53.33.228:3001", schemes = listOf("http"))
+
+                allowHost("2d.gay", schemes = listOf("https"), subDomains = listOf("img"))
+
+                allowNonSimpleContentTypes = true
+                allowCredentials = true
             }
 
             install(ContentNegotiation) {
@@ -196,7 +214,7 @@ suspend fun main() {
                 // api
                 route("/v1") {
                     // /login
-                    login()
+                    session()
 
                     // /users
                     users()

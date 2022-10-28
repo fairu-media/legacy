@@ -5,5 +5,7 @@ The backend portion of Fairu, it handles user creation, file uploading, and file
 ## TODO 
 
 - [ ] Rate-limiting
-- [ ] Better security
-- [x] Sessions?
+- [x] Better security
+- [x] Sessions
+- [ ] User Settings
+- [ ] Superuser
