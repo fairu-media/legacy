@@ -2,7 +2,7 @@
 
 An image-hosting service written.
 
-- [My personal deployment](https://img.2d.gay)
+- [My personal deployment](https://img.2d.gay) ([web ui](https://img.2d.gay/web))
 
 ## Components
 
