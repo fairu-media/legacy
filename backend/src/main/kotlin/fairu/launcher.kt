@@ -120,10 +120,7 @@ suspend fun main() {
                 allowMethod(HttpMethod.Delete)
                 allowMethod(HttpMethod.Options)
 
-                allowHost("127.0.0.1",          schemes = listOf("http"))
-                allowHost("154.53.33.228:3001", schemes = listOf("http"))
-
-                allowHost("2d.gay", schemes = listOf("https"), subDomains = listOf("img"))
+                anyHost()
 
                 allowNonSimpleContentTypes = true
                 allowCredentials = true
