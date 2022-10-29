@@ -1,5 +1,5 @@
-import { Button, Card, H1, Menu, MenuDivider, MenuItem, NonIdealState, NonIdealStateIconSize, Spinner, SpinnerSize, Tag, Toaster } from "@blueprintjs/core";
-import Container from "components/container";
+import { Button, Card, Divider, H1, Menu, MenuDivider, MenuItem, NonIdealState, NonIdealStateIconSize, Spinner, SpinnerSize, Tag, Toaster } from "@blueprintjs/core";
+import Container from "components/ui/container";
 import { meFiles } from "lib/api/users";
 import useSession from "lib/hooks/useSession"
 import { useQuery } from "react-query";
@@ -7,6 +7,8 @@ import { Masonry, RenderComponentProps } from "masonic";
 import { File } from "lib/api/types";
 import { Popover2 } from "@blueprintjs/popover2";
 import { copyToClipboard } from "lib/common/clipboard";
+import { goto } from "lib/blueprint";
+import { useRouter } from "next/router";
 
 function FileCard({ data: file }: RenderComponentProps<File>) {
     const url = process.env.NEXT_PUBLIC_FAIRU_BACKEND_URL + "/" + file.file_name;
@@ -16,7 +18,7 @@ function FileCard({ data: file }: RenderComponentProps<File>) {
             <div className="flex justify-between items-center pt-[10px]">
                 <span className="font-mono text-xs">{file.file_name}</span>
                 <Popover2 placement="top-end" content={(
-                    <Menu className="bp4-elevation-2">
+                    <Menu>
                         <MenuItem icon="link"     text="Copy Link" onClick={() => copyToClipboard(url, true)} />
                         <MenuItem icon="download" text="Open File" href={url} target="_blank" rel="noopener noreferrer" />
                         <MenuDivider />
@@ -30,7 +32,7 @@ function FileCard({ data: file }: RenderComponentProps<File>) {
     )
 }
 
-export default function User() {
+export default function Files() {
     const { session } = useSession(
         { redirectTo: "/auth/login" }
     );
@@ -41,6 +43,7 @@ export default function User() {
         { enabled: session != null }
     );
 
+    const router = useRouter();
     if (!session || status == "loading") {
         return (
             <Container>
@@ -51,9 +54,11 @@ export default function User() {
 
     return (
         <Container>
-            <div>
-                <H1 className="pb-4">Your Files</H1>
+            <div className="flex items-center justify-between">
+                <span className="text-lg font-semibold">Your Uploads</span>
+                <Button intent="success" icon="upload" text="Upload" onClick={goto(router, "/users/@me/files/upload")} />
             </div>
+            <Divider className="my-4" />
             {!files?.length && (
                 <NonIdealState
                     icon="upload"
@@ -64,6 +69,7 @@ export default function User() {
             )}
 
             <Masonry
+                key={"@me/files"}
                 items={files ?? []}
                 columnGutter={8}
                 render={FileCard}

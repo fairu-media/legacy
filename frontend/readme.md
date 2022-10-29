@@ -14,7 +14,7 @@ The frontend portion of Fairu, it's made with NextJS, TailwindCSS, and Blueprint
       - [ ] Table View
         - [ ] Sorting
         - [ ] Multi-select
-    - [ ] `/upload`
+    - [x] `/upload`
 - [ ] `/settings`
   - [ ] `/profile`
   - [ ] `/account`
