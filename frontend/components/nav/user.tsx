@@ -1,10 +1,10 @@
 import { useQueryClient } from "react-query"
-import { AnchorButton, Button, Menu, MenuDivider, MenuItem, Spinner, SpinnerSize } from "@blueprintjs/core";
+import { Button, Menu, MenuDivider, MenuItem, Spinner, SpinnerSize } from "@blueprintjs/core";
 import { Popover2 } from "@blueprintjs/popover2";
 import { useRouter } from "next/router";
 import { logout } from "lib/api/session";
 import useSession from "lib/hooks/useSession";
-import { frontendUrl } from "lib/contants";
+import { goto } from "lib/blueprint";
 
 export default function UserNavigation() {
     const { session, status } = useSession();
@@ -17,8 +17,8 @@ export default function UserNavigation() {
 
     if (session == null) {
         return <>
-            <AnchorButton href={`${frontendUrl}/auth/login`}   className="bp4-minimal" text="Login" />
-            <AnchorButton href={`${frontendUrl}/auth/sign-up`} className="bp4-minimal" text="Sign Up" />
+            <Button onClick={goto(router, `/auth/login`)}   className="bp4-minimal" text="Login" />
+            <Button onClick={goto(router, `auth/sign-up`)} className="bp4-minimal" text="Sign Up" />
         </>
     }
 
@@ -30,15 +30,15 @@ export default function UserNavigation() {
         }
 
         qc.invalidateQueries("@me")
-        router.replace(frontendUrl)
+        router.push("/")
     }
 
     return (
         <Popover2 content={
-            <Menu className="bp4-elevation-2">
-                <MenuItem icon="mugshot"  text="Profile"  href={frontendUrl + "/users/@me"} />
-                <MenuItem icon="document" text="Files"    href={frontendUrl + "/users/@me/files"} />
-                <MenuItem icon="cog"      text="Settings" href={frontendUrl + "/users/@me/settings"} />
+            <Menu className="">
+                <MenuItem icon="mugshot"  text="Profile"  onClick={goto(router, "/users/@me")} />
+                <MenuItem icon="document" text="Files"    onClick={goto(router, "/users/@me/files")} />
+                <MenuItem icon="cog"      text="Settings" onClick={goto(router, "/settings")} />
 
                 <MenuDivider />
 

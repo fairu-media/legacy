@@ -11,6 +11,8 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import org.bson.BsonArray
+import org.bson.BsonDocument
 import org.bson.Document
 import org.litote.kmongo.coroutine.aggregate
 import org.litote.kmongo.group
@@ -18,16 +20,10 @@ import org.litote.kmongo.project
 
 @Serializable
 data class GetFilesResponse(
-    @SerialName("file_count")
-    val fileCount: Long,
+    @SerialName("total_files")
+    val totalFiles: Long,
     @SerialName("total_hits")
     val totalHits: Long,
-)
-
-@Serializable
-data class TotalHits(
-    @SerialName("total_hits")
-    val totalHits: Long
 )
 
 fun Route.files() = route("/files") {
@@ -35,12 +31,12 @@ fun Route.files() = route("/files") {
         // TODO: merge into a single aggregate call maybe?
         val files = File.collection.countDocuments()
 
-        val hits = File.collection.aggregate<TotalHits>(
+        val hits = File.collection.aggregate<BsonDocument>(
             group("", Accumulators.sum("hits", "${'$'}hits")),
             project(Projections.excludeId(), Document("total_hits", "${'$'}hits")),
-        ).first()
+        ).toList().first()
 
-        respond(GetFilesResponse(files, hits?.totalHits ?: -1))
+        respond(GetFilesResponse(files, hits["total_hits"]!!.asInt64().value))
     }
 
     file()

@@ -1,7 +1,6 @@
 import { H1, Text } from "@blueprintjs/core";
 import AccountForm, { SubmissionHandler } from "components/form/account-form";
 import { createUser, me } from "lib/api/users";
-import { frontendUrl } from "lib/contants";
 import { useRouter } from "next/router";
 import { useQueryClient } from "react-query";
 
@@ -16,7 +15,7 @@ export default function SignUp() {
         }
 
         await qc.prefetchQuery("@me", me);
-        router.replace(frontendUrl + "/auth/login");
+        router.replace("/auth/login");
     }
 
     return (

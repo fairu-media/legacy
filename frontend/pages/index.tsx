@@ -1,5 +1,5 @@
 import { Card, H1, H2, H3, H4, H5, H6, Spinner, SpinnerSize } from "@blueprintjs/core"
-import Container from "components/container"
+import Container from "components/ui/container"
 import { fetchFileStatistics } from "lib/api/files"
 import { fetchUserStatistics } from "lib/api/users"
 import { useQuery } from "react-query"
@@ -21,7 +21,7 @@ export default function Home() {
                     <H6 className="font-normal">Registered Users</H6>
                 </Card>
                 <Card className="flex flex-col">
-                    <H3>{fileStatus == "loading" ? <Spinner size={SpinnerSize.SMALL} /> : file?.file_count}</H3>
+                    <H3>{fileStatus == "loading" ? <Spinner size={SpinnerSize.SMALL} /> : file?.total_files}</H3>
                     <H6 className="font-normal">Files Uploaded</H6>
                 </Card>
                 <Card className="flex flex-col">

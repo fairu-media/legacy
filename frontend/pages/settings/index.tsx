@@ -1,12 +1,14 @@
 import { Spinner, SpinnerSize } from "@blueprintjs/core";
-import Container from "components/container";
+import Container from "components/ui/container";
 import useSession from "lib/hooks/useSession";
+import { useRouter } from "next/router";
 
 export default function User() {
     const { session } = useSession(
         { redirectTo: "/auth/login" }
     );
 
+    const router = useRouter()
 
     if (!session) {
         return (
@@ -16,5 +18,5 @@ export default function User() {
         )
     }
 
-    return "Settings will be here soon."
+    router.replace("/settings/profile")
 }

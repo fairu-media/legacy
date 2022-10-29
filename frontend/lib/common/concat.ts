@@ -1,3 +1,3 @@
 export function concat(...strs: string[]): string {
-    return strs.join(" ");
+    return strs.join(" ").trim();
 }

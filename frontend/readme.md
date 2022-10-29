@@ -6,9 +6,6 @@ The frontend portion of Fairu, it's made with NextJS, TailwindCSS, and Blueprint
 
 - [ ] `/users/@me`
   - [ ] `/`
-  - [ ] `/settings`
-    - [ ] `/account`
-    - [ ] `/tokens`
   - [ ] `/files`
     - [ ] `/`
       - [ ] Card View
@@ -18,6 +15,13 @@ The frontend portion of Fairu, it's made with NextJS, TailwindCSS, and Blueprint
         - [ ] Sorting
         - [ ] Multi-select
     - [ ] `/upload`
+- [ ] `/settings`
+  - [ ] `/profile`
+  - [ ] `/account`
+  - [ ] `/tokens`
+    - [x] `/`
+    - [x] `/create`
+    - [ ] `/:id`
 
 ---
 

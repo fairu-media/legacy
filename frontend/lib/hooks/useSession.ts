@@ -1,7 +1,6 @@
 import { useRouter } from "next/router";
 import { useQuery } from "react-query";
 import { me } from "lib/api/users";
-import { frontendUrl } from "lib/contants";
 
 export default function useSession({
     redirectTo = "",
@@ -16,7 +15,7 @@ export default function useSession({
                 if (!redirectTo) return;
 
                 if (user == null || redirectIfFound) {
-                    router.replace(frontendUrl + redirectTo)
+                    router.replace(redirectTo)
                 }
             }
         }

@@ -1,7 +1,6 @@
 import { H1, Text } from "@blueprintjs/core";
 import AccountForm, { SubmissionHandler } from "components/form/account-form";
 import { login } from "lib/api/session";
-import { frontendUrl } from "lib/contants";
 import { useRouter } from "next/router";
 
 export default function SignUp() {
@@ -13,7 +12,7 @@ export default function SignUp() {
             return setAlert(message);
         }
 
-        router.replace(frontendUrl + "/users/@me");
+        router.replace("/users/@me");
     }
 
     return (

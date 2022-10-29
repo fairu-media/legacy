@@ -2,6 +2,7 @@ package fairu.backend.routes.users.tokens
 
 import fairu.backend.exception.failure
 import fairu.backend.user.access.AccessToken
+import fairu.backend.utils.Message
 import fairu.backend.utils.Snowflake
 import fairu.backend.utils.ext.respond
 import io.ktor.http.*
@@ -27,7 +28,15 @@ fun Route.token() = route("/{token_id}") {
     }
 
     get {
-        respond(call.token.toJson())
+        respond(call.token)
+    }
+
+    delete {
+        if (call.token.delete()) {
+            respond(call.token)
+        } else {
+            failure(HttpStatusCode.NotFound, "Couldn't find token to delete")
+        }
     }
 }
 
