@@ -23,10 +23,6 @@ import org.overviewproject.mime_types.MimeTypeDetector
 val fairuModule = module {
     val log by logging("fairu.backend.dependencies")
 
-//    single {
-//        Tika()
-//    }
-
     single { MimeTypeDetector() }
 
     /* storage */

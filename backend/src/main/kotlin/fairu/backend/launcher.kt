@@ -5,7 +5,6 @@ import aws.sdk.kotlin.services.s3.createBucket
 import aws.sdk.kotlin.services.s3.model.BucketCannedAcl
 import com.akuleshov7.ktoml.file.TomlFileReader
 import fairu.backend.exception.RequestFailedException
-import fairu.backend.exception.failure
 import fairu.backend.routes.files.files
 import fairu.backend.routes.image
 import fairu.backend.routes.session
