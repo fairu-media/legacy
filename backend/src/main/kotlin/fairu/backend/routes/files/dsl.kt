@@ -34,9 +34,9 @@ fun Route.files() = route("/files") {
         val hits = File.collection.aggregate<BsonDocument>(
             group("", Accumulators.sum("hits", "${'$'}hits")),
             project(Projections.excludeId(), Document("total_hits", "${'$'}hits")),
-        ).toList().first()
+        ).toList().firstOrNull()
 
-        respond(GetFilesResponse(files, hits["total_hits"]!!.asInt64().value))
+        respond(GetFilesResponse(files, hits?.get("total_hits")?.asInt64()?.value ?: 0))
     }
 
     file()

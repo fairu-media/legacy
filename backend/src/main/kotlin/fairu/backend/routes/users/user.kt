@@ -3,6 +3,7 @@ package fairu.backend.routes.users
 import fairu.backend.exception.failure
 import fairu.backend.file.File
 import fairu.backend.routes.users.tokens.tokens
+import fairu.backend.user.CensoringUserSerializer
 import fairu.backend.user.User
 import fairu.backend.user.UserPrincipal
 import fairu.backend.user.access.AccessScope
@@ -41,9 +42,7 @@ fun Route.user() = route("/{user_id}") {
     scopedAccess(AccessScope.ReadUser, optional = true) {
         get {
             // TODO: omit data depending on access token scopes
-            val user = call.user.toJson()
-
-            respond(user)
+            respond(CensoringUserSerializer, call.user)
         }
     }
 

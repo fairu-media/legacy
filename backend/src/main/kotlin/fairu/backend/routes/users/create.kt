@@ -1,6 +1,7 @@
 package fairu.backend.routes.users
 
 import fairu.backend.exception.failure
+import fairu.backend.user.CensoringUserSerializer
 import fairu.backend.user.User
 import fairu.backend.utils.Config
 import fairu.backend.utils.auth.Credentials
@@ -13,13 +14,13 @@ import io.ktor.server.routing.*
 import naibu.ext.koin.get
 import org.litote.kmongo.eq
 
-fun Route.new() {
-    val config = get<Config.Fairu>()
-    post {
+fun Route.create() {
+    val usernames = get<Config.Fairu>().management.allowedUsernames
+    post("/create") {
         val info = call.receive<Credentials>()
 
-        if (config.allowedUsernames != null && info.username !in config.allowedUsernames) {
-            failure(HttpStatusCode.Forbidden, "Disallowed username.")
+        if (usernames != null && info.username !in usernames) {
+            failure(HttpStatusCode.Forbidden, "Username has not been whitelisted.")
         }
 
         /* check if the supplied username has already been taken. */
@@ -37,6 +38,6 @@ fun Route.new() {
         user.save()
 
         /* respond w/ no content, user is required to log-in for a session */
-        respond(user.toJson())
+        respond(CensoringUserSerializer, user)
     }
 }

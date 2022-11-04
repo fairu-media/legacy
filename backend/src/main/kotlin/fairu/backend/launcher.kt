@@ -166,6 +166,7 @@ suspend fun main() {
                     }
 
                     challenge {
+                        call.sessions.clear<Session>()
                         call.respond(HttpStatusCode.Unauthorized)
                     }
                 }

@@ -1,6 +1,7 @@
 package fairu.backend.routes
 
 import fairu.backend.exception.failure
+import fairu.backend.user.CensoredUser
 import fairu.backend.user.Session
 import fairu.backend.user.User
 import fairu.backend.user.UserPrincipal
@@ -14,9 +15,25 @@ import io.ktor.server.auth.*
 import io.ktor.server.request.*
 import io.ktor.server.routing.*
 import io.ktor.server.sessions.*
+import kotlinx.serialization.*
+import kotlinx.serialization.json.*
 import org.litote.kmongo.eq
 
+@Serializable
+data class GetSessionResponse(
+    @SerialName("logged_in")
+    val loggedIn: Boolean,
+    val user: CensoredUser?
+)
+
 fun Route.session() = route("/session") {
+    authenticate("session", optional = true) {
+        get {
+            val principal = call.principal<UserPrincipal.Session>()
+            respond(GetSessionResponse(principal != null, principal?.user))
+        }
+    }
+
     authenticate("session") {
         delete {
             val principal = call.principal<UserPrincipal.Session>()

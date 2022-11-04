@@ -7,7 +7,7 @@ plugins {
     kotlin("plugin.serialization") version "1.7.20"
 }
 
-group = "fairu"
+group   = "fairu.backend"
 version = "2.0"
 
 application {
@@ -17,8 +17,6 @@ application {
 repositories {
     mavenCentral()
     maven("https://maven.dimensional.fun/releases")
-    maven("https://maven.noelware.org")
-    maven("https://maven.floofy.dev/repo/releases")
     maven("https://jitpack.io")
 }
 

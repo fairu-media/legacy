@@ -7,17 +7,31 @@ import kotlinx.serialization.Serializable
 data class Config(val fairu: Fairu) {
     @Serializable
     data class Fairu(
-        @SerialName("allowed-usernames")
-        val allowedUsernames: List<String>? = null,
+        val management: Management = Management(),
+        val frontend: Frontend = Frontend(),
         val server: Server = Server(),
         val s3: S3,
         val jwt: Jwt,
         val db: Database,
     ) {
         @Serializable
+        data class Management(
+            /** Usernames allowed to be used in POST /v1/users */
+            @SerialName("allowed-usernames")
+            val allowedUsernames: List<String>? = null,
+        )
+
+        @Serializable
+        data class Frontend(
+            /** Whether frontend-specific routes should be added. */
+            val enabled: Boolean = false,
+            val url: String? = null
+        )
+
+        @Serializable
         data class Server(
             val host: String = "0.0.0.0",
-            val port: Long   = 3232 // we use a long because Ktoml is shit
+            val port: Long = 3232 // we use a long because Ktoml is shit
         )
 
         @Serializable
