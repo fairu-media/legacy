@@ -1,5 +1,5 @@
 import { Alert, Button, ButtonGroup, Card, Divider, NonIdealState, Spinner, SpinnerSize } from "@blueprintjs/core";
-import { createSettingsPage } from "components/layout/settings";
+import { createSettingsPage } from "components/ui/layout/settings";
 import { deleteUserToken, fetchUserTokens } from "lib/api/user-tokens";
 import { useQuery, useQueryClient } from "react-query";
 import Link from "next/link";

@@ -1,4 +1,4 @@
-import { Spinner, SpinnerSize } from "@blueprintjs/core";
+import { Divider, Spinner, SpinnerSize } from "@blueprintjs/core";
 import Container from "components/ui/container";
 import WorkInProgress from "components/wip";
 import useSession from "lib/hooks/useSession";
@@ -16,6 +16,12 @@ export default function Me() {
     return (
         <Container>
             <Head><title>Fairu &bull; Your Profile</title></Head>
+            <div>
+                <span className="text-lg font-semibold">Welcome back, <span className="underline">{session.username}</span></span>
+            </div>
+
+            <Divider className="my-4" />
+
             <WorkInProgress />
         </Container>
     );

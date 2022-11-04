@@ -49,6 +49,11 @@ export interface CreatedToken {
     id: string;
 }
 
+export interface CurrentSession {
+    logged_in: boolean;
+    user: User | null;
+}
+
 export type TokenScope = "file.upload" | "file.delete";
 
 /* responses */

@@ -1,0 +1,5 @@
+.vscode/
+.fleet/
+.next/
+
+node_modules

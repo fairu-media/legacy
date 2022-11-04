@@ -1,5 +1,13 @@
 import { fetchApiEndpoint } from "lib/api";
-import { UserAuthentication } from "./types";
+import { CurrentSession, UserAuthentication } from "./types";
+
+export async function current(): Promise<CurrentSession | string> {
+    const resp = await fetchApiEndpoint<CurrentSession>("/session", {
+        method: "GET"
+    });
+
+    return resp.success ? resp.data : resp.data.message
+}
 
 export async function login(body: UserAuthentication): Promise<string | true> {
     const resp = await fetchApiEndpoint("/session", {

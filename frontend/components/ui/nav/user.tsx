@@ -18,19 +18,19 @@ export default function UserNavigation() {
     if (session == null) {
         return <>
             <Button onClick={goto(router, `/auth/login`)}   className="bp4-minimal" text="Login" />
-            <Button onClick={goto(router, `auth/sign-up`)} className="bp4-minimal" text="Sign Up" />
+            <Button onClick={goto(router, `/auth/sign-up`)} className="bp4-minimal" text="Sign Up" />
         </>
     }
 
     async function submitLogout() {
         const resp = await logout()
         if (resp != true) {
-            router.push("?alert=" + resp);
+            await router.push("?alert=" + resp);
             return;
         }
 
-        qc.invalidateQueries("@me")
-        router.push("/")
+        await qc.invalidateQueries("@me")
+        await router.push("/")
     }
 
     return (

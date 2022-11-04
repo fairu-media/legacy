@@ -2,7 +2,7 @@ import { fetchApiEndpoint } from "lib/api";
 import { User, File, UserAuthentication,  GetUsers } from "./types";
 
 export async function createUser(body: UserAuthentication): Promise<string | true> {
-    const resp = await fetchApiEndpoint("/users", {
+    const resp = await fetchApiEndpoint("/users/create", {
         body: JSON.stringify(body),
         headers: { "Content-Type": "application/json" },
         method: "POST"

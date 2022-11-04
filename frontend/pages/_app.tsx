@@ -18,7 +18,7 @@ import {
     QueryClient,
     QueryClientProvider,
 } from 'react-query'
-import NavBar from "components/nav/navbar";
+import NavBar from "components/ui/nav/navbar";
 import { ToastBar, Toaster } from "react-hot-toast";
 import { IconContext } from "react-icons";
 import { useRouter } from "next/router";

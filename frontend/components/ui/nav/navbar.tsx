@@ -1,4 +1,4 @@
-import { Alignment, AnchorButton, Button, Navbar, Tag } from "@blueprintjs/core";
+import { Alignment, Button, Navbar, Tag } from "@blueprintjs/core";
 import Container from "components/ui/container";
 import UserNavigation from "./user";
 import { FaDiscord, FaGithub } from "react-icons/fa";
@@ -21,8 +21,8 @@ export default function NavBar() {
                 <Navbar.Group align={Alignment.RIGHT}>
                     <UserNavigation />
                     <Navbar.Divider />
-                    <Link href="https://github.com/melike2d/fairu" className="bp4-minimal" icon={FaGithub} />
-                    <Link href="https://2d.gay/discord" className="bp4-minimal" icon={FaDiscord}/>
+                    <Link href="https://github.com/melike2d/fairu" title="github"  className="bp4-minimal" icon={FaGithub}  />
+                    <Link href="https://2d.gay/discord"            title="discord" className="bp4-minimal" icon={FaDiscord} />
                 </Navbar.Group>
             </Container>
             {/* </div> */}

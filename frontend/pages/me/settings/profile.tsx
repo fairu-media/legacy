@@ -1,5 +1,5 @@
 import { Spinner, SpinnerSize } from "@blueprintjs/core";
-import { createSettingsPage } from "components/layout/settings";
+import { createSettingsPage } from "components/ui/layout/settings";
 import WorkInProgress from "components/wip";
 import useSession from "lib/hooks/useSession";
 

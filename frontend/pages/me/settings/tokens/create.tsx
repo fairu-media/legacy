@@ -1,5 +1,5 @@
 import { Button, ButtonGroup, Checkbox, Classes, Divider, Label, Spinner, SpinnerSize, Toast } from "@blueprintjs/core";
-import { createSettingsPage } from "components/layout/settings";
+import { createSettingsPage } from "components/ui/layout/settings";
 import useSession from "lib/hooks/useSession";
 import { useFormik } from "formik";
 import { TokenScope, TOKEN_SCOPES } from "lib/api/types";
@@ -10,7 +10,6 @@ import { useRouter } from "next/router";
 import { createUserToken } from "lib/api/user-tokens";
 import { copyToClipboard } from "lib/common/clipboard";
 import toast from "react-hot-toast";
-import Head from "next/head";
 
 export default createSettingsPage("Create Access Token", () => {
     const { session } = useSession(
@@ -37,7 +36,7 @@ export default createSettingsPage("Create Access Token", () => {
             });
 
             if (typeof response === "string") {
-                router.push("/me/settings/tokens?alert=" + response);
+                await router.push("/me/settings/tokens?alert=" + response);
                 return;
             }
 
@@ -46,7 +45,7 @@ export default createSettingsPage("Create Access Token", () => {
                 <Toast intent="success" message="Successfully created an access token! It has been copied to your clipboard." onDismiss={() => toast.remove(t.id)} />
             ))
 
-            router.push("/me/settings/tokens");
+            await router.push("/me/settings/tokens");
         },
         validate: values => {
             const errors: NodeJS.Dict<any> = {};
