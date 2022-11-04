@@ -65,6 +65,7 @@ type AccountFormProps = {
     purpose: Purpose;
 }
 
+// TODO: add better error/alert handling
 
 export default function AccountForm({
     onSubmit,

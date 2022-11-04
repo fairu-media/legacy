@@ -1,5 +1,5 @@
 import { fetchApiEndpoint } from "lib/api";
-import { User, File, UserAuthentication, GetFiles, GetUsers } from "./types";
+import { User, File, UserAuthentication,  GetUsers } from "./types";
 
 export async function createUser(body: UserAuthentication): Promise<string | true> {
     const resp = await fetchApiEndpoint("/users", {
@@ -33,3 +33,10 @@ export async function fetchUserStatistics(): Promise<number> {
     return resp.success ? resp.data.total_users : -1
 }
 
+export async function deleteFile(id: string): Promise<true | string> {
+    const resp = await fetchApiEndpoint<File>(`/files/${id}`, {
+        method: "DELETE",
+    });
+
+    return resp.success ? true : resp.data.message;
+}

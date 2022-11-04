@@ -36,9 +36,9 @@ export default function UserNavigation() {
     return (
         <Popover2 content={
             <Menu className="">
-                <MenuItem icon="mugshot"  text="Profile"  onClick={goto(router, "/users/@me")} />
-                <MenuItem icon="document" text="Files"    onClick={goto(router, "/users/@me/files")} />
-                <MenuItem icon="cog"      text="Settings" onClick={goto(router, "/settings")} />
+                <MenuItem icon="mugshot"  text="Profile"  onClick={goto(router, "/me")} />
+                <MenuItem icon="document" text="Files"    onClick={goto(router, "/me/files")} />
+                <MenuItem icon="cog"      text="Settings" onClick={goto(router, "/me/settings")} />
 
                 <MenuDivider />
 

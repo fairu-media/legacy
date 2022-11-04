@@ -19,6 +19,7 @@ repositories {
     maven("https://maven.dimensional.fun/releases")
     maven("https://maven.noelware.org")
     maven("https://maven.floofy.dev/repo/releases")
+    maven("https://jitpack.io")
 }
 
 dependencies {
@@ -58,14 +59,11 @@ dependencies {
     implementation("aws.sdk.kotlin:s3:0.17.5-beta")
     implementation("aws.smithy.kotlin:http-client-engine-ktor:0.12.9")
 
-    /* tika - content type checking */
-    implementation(platform("org.apache.tika:tika-bom:2.5.0"))
-
-    implementation("org.apache.tika:tika-core")
-    implementation("org.apache.tika:tika-parsers-standard-package")
+    /*  - content type checking */
+    implementation("com.github.overview:mime-types:6e273e3")
 
     /* ktor - server library */
-    implementation(platform("io.ktor:ktor-bom:2.1.2"))
+    implementation(platform("io.ktor:ktor-bom:2.1.3"))
 
     // client
     implementation("io.ktor:ktor-client-cio")

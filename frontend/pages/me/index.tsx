@@ -1,9 +1,10 @@
 import { Spinner, SpinnerSize } from "@blueprintjs/core";
-import { createSettingsPage } from "components/layout/settings";
+import Container from "components/ui/container";
 import WorkInProgress from "components/wip";
 import useSession from "lib/hooks/useSession";
+import Head from "next/head";
 
-export default createSettingsPage(() => {
+export default function Me() {
     const { session } = useSession(
         { redirectTo: "/auth/login" }
     );
@@ -12,5 +13,10 @@ export default createSettingsPage(() => {
         return <Spinner size={SpinnerSize.LARGE} />
     }
 
-    return <WorkInProgress />;
-});
+    return (
+        <Container>
+            <Head><title>Fairu &bull; Your Profile</title></Head>
+            <WorkInProgress />
+        </Container>
+    );
+}

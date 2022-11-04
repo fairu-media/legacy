@@ -5,6 +5,7 @@ import aws.sdk.kotlin.services.s3.createBucket
 import aws.sdk.kotlin.services.s3.model.BucketCannedAcl
 import com.akuleshov7.ktoml.file.TomlFileReader
 import fairu.backend.exception.RequestFailedException
+import fairu.backend.exception.failure
 import fairu.backend.routes.files.files
 import fairu.backend.routes.image
 import fairu.backend.routes.session
@@ -54,16 +55,6 @@ import org.litote.kmongo.eq
 val log by logging("fairu.backend.application")
 val configPath = System.getProperty("fairu.backend.config-path") ?: "fairu.toml"
 
-/**
- * Fairu application.
- *
- * ## Details
- * - Storage:  S3 via AWS-Kotlin-SDK
- * - Database: MongoDB
- * - Server:   Ktor
- *
- * @constructor Create empty Cdn
- */
 suspend fun main() {
     log.info { "! Starting Fairu v${Version.FULL}" }
 
@@ -84,7 +75,6 @@ suspend fun main() {
     log.info { "* Creating S3 bucket '${config.s3.bucket}'" }
     val s3 by inject<S3Client>()
 
-    // ensure configured bucket exists.
     val buckets = s3.listBuckets().buckets
         ?.map { it.name }
         ?: emptyList()

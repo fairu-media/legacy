@@ -1,4 +1,4 @@
 import { createSettingsPage } from "components/layout/settings";
 import WorkInProgress from "components/wip";
 
-export default createSettingsPage(() => <WorkInProgress />);
+export default createSettingsPage("Edit Access Token", () => <WorkInProgress />);

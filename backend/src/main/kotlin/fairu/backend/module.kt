@@ -12,20 +12,22 @@ import fairu.backend.utils.mongo.Database
 import fairu.backend.utils.mongo.DatabaseClient
 import io.ktor.client.engine.cio.*
 import naibu.logging.logging
-import org.apache.tika.Tika
 import org.koin.dsl.bind
 import org.koin.dsl.module
 import org.litote.kmongo.coroutine.CoroutineClient
 import org.litote.kmongo.coroutine.coroutine
 import org.litote.kmongo.reactivestreams.KMongo
+import org.overviewproject.mime_types.MimeTypeDetector
 
 @OptIn(InternalApi::class)
 val fairuModule = module {
     val log by logging("fairu.backend.dependencies")
 
-    single {
-        Tika()
-    }
+//    single {
+//        Tika()
+//    }
+
+    single { MimeTypeDetector() }
 
     /* storage */
     single(createdAtStart = true) {

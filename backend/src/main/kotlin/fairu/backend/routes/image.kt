@@ -1,9 +1,8 @@
 package fairu.backend.routes
 
 import aws.sdk.kotlin.services.s3.S3Client
-import aws.sdk.kotlin.services.s3.headObject
 import aws.sdk.kotlin.services.s3.model.GetObjectRequest
-import aws.sdk.kotlin.services.s3.model.NotFound
+import aws.sdk.kotlin.services.s3.model.NoSuchKey
 import aws.smithy.kotlin.runtime.content.ByteStream
 import aws.smithy.kotlin.runtime.io.SdkByteReadChannel
 import com.sksamuel.scrimage.ImmutableImage
@@ -25,32 +24,55 @@ import io.ktor.server.auth.*
 import io.ktor.server.plugins.partialcontent.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import io.ktor.util.pipeline.*
 import io.ktor.utils.io.*
 import io.ktor.utils.io.jvm.javaio.*
 import naibu.ext.awt.Color
 import naibu.ext.koin.get
 import org.litote.kmongo.eq
-import org.litote.kmongo.inc
 import java.awt.Color
 import java.nio.ByteBuffer
 
 private const val FILE_NAME = "file_name"
 
-val missingBase: ImmutableImage = run {
-    val trol = ImmutableImageLoader.create()
+val STATUS_IMAGE_BASE: ImmutableImage = run {
+    val troll = ImmutableImageLoader.create()
         .fromStream(File::class.java.classLoader.getResourceAsStream("assets/images/trol.png"))
         .scaleTo(120, 120)
 
     val card = ImmutableImage.create(1000, 300)
         .toCanvas()
-        .draw(Text("This file doesn't exist!", 50, 300 / 2 + 15, Color.WHITE, RUBIK_REGULAR.deriveFont(60.pxToPt)))
         .image
-        .overlay(trol, Position.CenterRight)
+        .overlay(troll, Position.CenterRight)
 
     ImmutableImage.create(1000, 300)
         .padRight(50)
         .fill(Color("#1e3a8a"))
         .overlay(card)
+}
+
+fun createBaseStatusImage(text: String):ImmutableImage {
+    return STATUS_IMAGE_BASE.toCanvas()
+        .draw(Text(text, 50, 300 / 2 + 15, Color.WHITE, RUBIK_REGULAR.deriveFont(60.pxToPt)))
+        .image
+}
+
+val BASE_NOT_FOUND      = createBaseStatusImage("This file doesn't exist.")
+val BASE_MISSING_OBJECT = createBaseStatusImage("Couldn't find an S3 object for this file.")
+val BASE_NO_CONTENT     = createBaseStatusImage("This file does not have any content/")
+
+suspend fun PipelineContext<Unit, ApplicationCall>.respondStatusImage(base: ImmutableImage, fileName: String) {
+    val image = base.toCanvas()
+        .draw(Text(fileName, 50, 300 / 2 - 50, Color.WHITE, SOURCE_CODE_PRO_BOLD.deriveFont(60.pxToPt)))
+        .image
+        .forWriter(PngWriter())
+        .stream()
+
+    call.respond(object : OutgoingContent.ReadChannelContent() {
+        override val contentType: ContentType = ContentType.Image.PNG
+
+        override fun readFrom(): ByteReadChannel = image.toByteReadChannel()
+    })
 }
 
 fun Route.image() = route("/{$FILE_NAME}") {
@@ -66,50 +88,16 @@ fun Route.image() = route("/{$FILE_NAME}") {
 
             val file = File.find(File::fileName eq fileName)
             if (file == null) {
-                val image = missingBase.toCanvas()
-                    .draw(Text(fileName, 50, 300 / 2 - 50, Color.WHITE, SOURCE_CODE_PRO_BOLD.deriveFont(60.pxToPt)))
-                    .image
-                    .forWriter(PngWriter())
-                    .stream()
-
-                call.respond(object : OutgoingContent.ReadChannelContent() {
-                    override val contentType: ContentType = ContentType.Image.PNG
-
-                    override fun readFrom(): ByteReadChannel = image.toByteReadChannel()
-                })
-            } else {
+                respondStatusImage(BASE_NOT_FOUND, fileName)
+            } else try {
                 /* fetch file from the S3 bucket */
-                val s3obj = try {
-                    client.headObject {
-                        bucket = config.s3.bucket
-                        key    = fileName
-                    }
-                } catch (ex: NotFound) {
-                    null
-                }
-
-                if (s3obj == null) {
-                    /* remove file from the database if its S3 object has been deleted. */
-                    file.delete()
-                    failure(HttpStatusCode.NotFound, "Missing an S3 object for file '$fileName' (${file.id}).")
-                }
-
-                /* check if anonymous view or non-owner view */
-                val user = call.authenticatedUser
-                if (user == null || user.id != file.userId) {
-                    /* increment file hit counter */
-                    File.collection.findOneAndUpdate(
-                        File::id eq file.id,
-                        inc(File::hits, 1)
-                    )
-                }
-
-                /* respond with file stream */
-                val ct = ContentType.parse(file.contentType)
                 client.getObject(GetObjectRequest {
                     bucket = config.s3.bucket
                     key    = fileName
                 }) {
+                    var hit = true
+                    /* respond with file stream */
+                    val ct = ContentType.parse(file.contentType)
                     when (val body = it.body) {
                         is ByteStream.Buffer -> call.respondBytes(body.bytes(), ct)
 
@@ -121,9 +109,26 @@ fun Route.image() = route("/{$FILE_NAME}") {
                             body.newReader().transferTo(this)
                         }
 
-                        else -> failure(HttpStatusCode.InternalServerError, "S3 did not return file stream")
+                        else -> {
+                            hit = false
+
+                            /* no point in having a blank file */
+                            file.delete()
+                            respondStatusImage(BASE_NO_CONTENT, fileName)
+                        }
+                    }
+
+                    /* check if anonymous view or non-owner view */
+                    val user = call.authenticatedUser
+                    if (hit && (user == null || user.id != file.userId)) {
+                        /* increment file hit counter */
+                        file.hit()
                     }
                 }
+            } catch (ex: NoSuchKey) {
+                /* remove file from the database since an S3 object doesn't exist. */
+                file.delete()
+                respondStatusImage(BASE_MISSING_OBJECT, fileName)
             }
         }
     }

@@ -10,8 +10,9 @@ import { useRouter } from "next/router";
 import { createUserToken } from "lib/api/user-tokens";
 import { copyToClipboard } from "lib/common/clipboard";
 import toast from "react-hot-toast";
+import Head from "next/head";
 
-export default createSettingsPage(() => {
+export default createSettingsPage("Create Access Token", () => {
     const { session } = useSession(
         { redirectTo: "/auth/login" }
     );
@@ -36,7 +37,7 @@ export default createSettingsPage(() => {
             });
 
             if (typeof response === "string") {
-                router.push("/settings/tokens?alert=" + response);
+                router.push("/me/settings/tokens?alert=" + response);
                 return;
             }
 
@@ -45,7 +46,7 @@ export default createSettingsPage(() => {
                 <Toast intent="success" message="Successfully created an access token! It has been copied to your clipboard." onDismiss={() => toast.remove(t.id)} />
             ))
 
-            router.push("/settings/tokens");
+            router.push("/me/settings/tokens");
         },
         validate: values => {
             const errors: NodeJS.Dict<any> = {};

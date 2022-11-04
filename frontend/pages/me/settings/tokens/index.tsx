@@ -8,7 +8,7 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 import { Token } from "lib/api/types";
 
-export default createSettingsPage(() => {
+export default createSettingsPage("Access Tokens", () => {
     const { session } = useSession(
         { redirectTo: "/auth/login" }
     );
@@ -37,16 +37,17 @@ export default createSettingsPage(() => {
                 isOpen={token != null}
                 onClose={() => setToken(null)}
                 onConfirm={async () => { 
+                    // @ts-expect-error
                     const resp = await deleteUserToken(token.id)
                     setToken(null);
 
                     if (typeof resp == "string") {
-                        router.push("/settings/tokens?alert=" + resp);
+                        router.push("/me/settings/tokens?alert=" + resp);
                         return;
                     }
 
                     qc.invalidateQueries([ "@me", "tokens" ])
-                    router.push("/settings/tokens");
+                    router.push("/me/settings/tokens");
                 }}
             >
                 <p>
@@ -56,7 +57,7 @@ export default createSettingsPage(() => {
 
             <div className="flex justify-between mb-4">
                 <span className="text-lg font-semibold">Your access tokens</span>
-                <Button icon="add" onClick={() => router.push("/settings/tokens/create")}>
+                <Button icon="add" onClick={() => router.push("/me/settings/tokens/create")}>
                     Create New
                 </Button>
             </div>

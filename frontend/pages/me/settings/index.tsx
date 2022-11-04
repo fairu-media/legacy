@@ -18,5 +18,5 @@ export default function User() {
         )
     }
 
-    router.replace("/settings/profile")
+    router.replace("/me/settings/profile")
 }

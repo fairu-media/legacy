@@ -41,7 +41,9 @@ fun Route.user() = route("/{user_id}") {
     scopedAccess(AccessScope.ReadUser, optional = true) {
         get {
             // TODO: omit data depending on access token scopes
-            respond(call.user.toJson())
+            val user = call.user.toJson()
+
+            respond(user)
         }
     }
 

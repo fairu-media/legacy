@@ -24,77 +24,71 @@ import io.ktor.utils.io.pool.*
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import naibu.common.generateUniqueId
-import naibu.ext.into
 import naibu.ext.koin.get
-import naibu.serialization.DefaultFormats
-import naibu.serialization.deserialize
-import naibu.serialization.json.Json
-import org.apache.tika.Tika
-import org.litote.kmongo.eq
-
-@Serializable
-data class PostFileRequest(
-    @SerialName("file_name")
-    val fileName: String? = null
-)
+import org.overviewproject.mime_types.MimeTypeDetector
 
 fun Route.upload() = scopedAccess(AccessScope.FileUpload) {
+    val s3 = get<S3Client>()
     put {
         val bodyParts = call.receiveMultipart()
             .readAllParts()
 
-        /* receive payload json */
-        val json: PostFileRequest = bodyParts.find { it.name == "payload_json" }
-            ?.into<PartData.FormItem>()?.value
-            ?.deserialize(DefaultFormats.Json)
-            ?: PostFileRequest()
+        /* receive file items */
+        val fileParts = bodyParts.filterIsInstance<PartData.FileItem>()
+        if (fileParts.isEmpty()) {
+            failure(HttpStatusCode.BadRequest, "Missing File Parts")
+        }
 
-        /* receive first file item */
-        val filePart = bodyParts
-            .filterIsInstance<PartData.FileItem>()
-            .firstOrNull()
-            ?: failure(HttpStatusCode.BadRequest, "Missing File Part.")
-
-        /* create a unique file name */
-        val name = if (json.fileName == null) {
-            generateUniqueId()
+        /* upload all file items. */
+        val files = mutableListOf<UploadedFile>()
+        for (filePart in fileParts) {
+            /* create a unique file name */
+            val name = generateUniqueId()
                 .drop(6)
                 .take(8) +
                 (filePart.originalFileName?.substringAfterLast('.')?.let { ".$it" } ?: "")
-        } else {
-            /* find conflict */
-            val conflict = File.find(File::fileName eq json.fileName)
-            if (conflict != null) {
-                failure(HttpStatusCode.Conflict, "A file with this name has already been taken.")
+
+            val ogFileName = filePart.originalFileName ?: name
+
+            /* read file bytes. */
+            val content     = filePart.provider().readBytes()
+            val contentType = get<MimeTypeDetector>().detectMimeType(ogFileName) { content }
+
+            /* create new file entry in the database */
+            val file = File(
+                name,
+                call.authenticatedUser!!.id,
+                contentType
+            )
+
+            file.save()
+
+            // create a new S3 object
+            s3.putObject {
+                key    = name
+                bucket = get<Config.Fairu>().s3.bucket
+                body   = ByteStream.fromBytes(content)
+
+                this.contentType = contentType
             }
 
-            json.fileName
+            files += UploadedFile(ogFileName, file)
         }
 
-        /* read file bytes. */
-        val content = filePart.provider().readBytes()
-        val contentType = get<Tika>()
-            .detect(content)
-            ?: "application/octet-stream"
-
-        /* create new file entry in the database */
-        val file = File(
-            name,
-            call.authenticatedUser!!.id,
-            contentType
-        )
-
-        file.save()
-
-        // create a new S3 object
-        get<S3Client>().putObject {
-            key    = name
-            bucket = get<Config.Fairu>().s3.bucket
-            body   = ByteStream.fromBytes(content)
-
-            this.contentType   = contentType
-        }
-
-        respond(file)
+        respond(Files(files.size, files))
     }
 }
+
+@Serializable
+data class Files(
+    @SerialName("total_uploaded")
+    val totalUploaded: Int,
+    val files: List<UploadedFile>
+)
+
+@Serializable
+data class UploadedFile(
+    @SerialName("original_file_name")
+    val originalFileName: String,
+    val document: File
+)

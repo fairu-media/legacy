@@ -14,4 +14,3 @@ export async function uploadFiles(form: FormData): Promise<File | string> {
 
     return resp.success ? resp.data : resp.data.message;
 }
-date-fns

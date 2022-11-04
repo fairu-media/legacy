@@ -11,7 +11,6 @@ import io.ktor.server.routing.*
 import io.ktor.util.*
 import org.litote.kmongo.eq
 
-
 private val AccessTokenKey = AttributeKey<AccessToken>("AccessToken")
 
 fun Route.token() = route("/{token_id}") {

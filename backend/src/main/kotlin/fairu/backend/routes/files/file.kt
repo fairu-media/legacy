@@ -38,13 +38,13 @@ fun Route.file() = route("/{file}") {
     scopedAccess(AccessScope.FileDelete) {
         delete {
             val principal = call.principal<UserPrincipal>()
-                ?: failure(HttpStatusCode.BadRequest, "Missing authorization, possible server failure. Try again?")
+                ?: failure(HttpStatusCode.ExpectationFailed, "Server is missing some data, try again?")
 
             if (call.file.userId != principal.user.id) {
                 failure(HttpStatusCode.Forbidden, "You're not the original uploader of this image.")
             }
 
-            call.file.delete()
+            call.file.deleteAll()
             respond(call.file)
         }
     }

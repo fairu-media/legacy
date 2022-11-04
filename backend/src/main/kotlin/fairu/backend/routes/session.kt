@@ -53,7 +53,7 @@ fun Route.session() = route("/session") {
             failure(HttpStatusCode.Unauthorized, "Invalid username or password.")
         }
 
-        /* create new user session and save it to the database. */
+        /* create a new user session and save it to the database. */
         val userSession = UserSession(user.id)
         userSession.save()
 

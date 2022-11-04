@@ -2,9 +2,13 @@ import { H1, Text } from "@blueprintjs/core";
 import AccountForm, { SubmissionHandler } from "components/form/account-form";
 import { login } from "lib/api/session";
 import { useRouter } from "next/router";
+import {useQueryClient} from "react-query";
+
+// TODO: add a "forgot password" link
+// TODO: add a "sign up" link
 
 export default function SignUp() {
-    const router = useRouter();
+    const router = useRouter(), qc = useQueryClient();
 
     const submit: SubmissionHandler = async (data, setAlert) => {
         const message = await login(data);
@@ -12,7 +16,8 @@ export default function SignUp() {
             return setAlert(message);
         }
 
-        router.replace("/users/@me");
+        await qc.invalidateQueries("@me");
+        await router.replace("/me");
     }
 
     return (

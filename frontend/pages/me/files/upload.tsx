@@ -3,8 +3,8 @@ import Container from "components/ui/container";
 import { uploadFiles } from "lib/api/files";
 import useSession from "lib/hooks/useSession";
 import { Masonry } from "masonic";
+import Head from "next/head";
 import { useRouter } from "next/router";
-import { type } from "os";
 import { useCallback, useEffect, useState } from "react";
 import { ErrorCode, useDropzone } from "react-dropzone";
 import toast from "react-hot-toast";
@@ -32,7 +32,7 @@ export default function FileUpload() {
     );
 
     const { getRootProps, getInputProps, isDragActive } = useDropzone({
-        maxFiles: 1,
+        // maxFiles: 10,
         onDrop,
         validator: (file: File) => {
             if (!file.name.match(/\.(webp|png|jpe?g)$/m)) {
@@ -100,6 +100,7 @@ export default function FileUpload() {
     if (!session) {
         return (
             <Container>
+                <Head><title>Fairu &bull; Upload File</title></Head>
                 <Spinner size={SpinnerSize.LARGE} />
             </Container>
         )
@@ -124,11 +125,12 @@ export default function FileUpload() {
             <Toast intent="success" message="Successfully uploaded your files." onDismiss={() => toast.remove(t.id)} />
         ))
 
-        router.push("/users/@me/files");
+        router.push("/me/files");
     }
 
     return (
         <Container>
+            <Head><title>Fairu &bull; Upload File</title></Head>
             <div className="flex items-center justify-between">
                 <span className="text-lg font-semibold">Upload a File</span>
                 <ButtonGroup>

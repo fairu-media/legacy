@@ -1,18 +1,18 @@
-import { Divider, Spinner, SpinnerSize } from "@blueprintjs/core";
+import { Divider } from "@blueprintjs/core";
 import Container from "components/ui/container";
 import { RouterActivatedLink } from "components/ui/link";
-import { User } from "lib/api/types";
-import useSession from "lib/hooks/useSession";
+import Head from "next/head";
 import React, { PropsWithChildren } from "react";
-import { FaAnchor, FaCog, FaKey, FaUser } from "react-icons/fa";
+import { FaCog, FaKey, FaUser } from "react-icons/fa";
 
 export type SettingsLayoutProps = PropsWithChildren<{
 }>
 
-export function createSettingsPage(component: (/* session: User */) => React.ReactElement): React.FC {
+export function createSettingsPage(title: string, component: (/* session: User */) => React.ReactElement): React.FC {
     return function Page() {
         return (
             <SettingsLayout>
+                <Head><title>Fairu &bull; {title}</title></Head>
                 {component()}
             </SettingsLayout>
         )
@@ -29,10 +29,10 @@ export default function SettingsLayout({ children }: SettingsLayoutProps) {
                 <div className="w-40 list-none">
                     <h1 className="uppercase text-xs font-semibold text-slate-300 px-[5px] mb-4">Sub Menus</h1>
                     <div className="space-y-1">
-                        <RouterActivatedLink href="/settings/profile" icon={FaUser}>Profile</RouterActivatedLink>
-                        <RouterActivatedLink href="/settings/account" icon={FaCog} >Account</RouterActivatedLink>
+                        <RouterActivatedLink href="/me/settings/profile" icon={FaUser}>Profile</RouterActivatedLink>
+                        <RouterActivatedLink href="/me/settings/account" icon={FaCog} >Account</RouterActivatedLink>
                         <Divider />
-                        <RouterActivatedLink href="/settings/tokens" icon={FaKey}>Access Tokens</RouterActivatedLink>
+                        <RouterActivatedLink href="/me/settings/tokens" icon={FaKey}>Access Tokens</RouterActivatedLink>
                     </div>
                 </div>
                 <div className="grow">
