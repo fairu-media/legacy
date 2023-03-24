@@ -3,8 +3,8 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     application
 
-    kotlin("jvm") version "1.7.20"
-    kotlin("plugin.serialization") version "1.7.20"
+    kotlin("jvm") version "1.8.10"
+    kotlin("plugin.serialization") version "1.8.10"
 }
 
 group   = "fairu.backend"
@@ -28,40 +28,40 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
 
     // logging
-    implementation("io.github.microutils:kotlin-logging:3.0.2")
+    implementation("io.github.microutils:kotlin-logging:3.0.5")
 
     /* scrimage - image generation */
-    implementation("com.sksamuel.scrimage:scrimage-core:4.0.32")
+    implementation("com.sksamuel.scrimage:scrimage-core:4.0.33")
 
     /* koin - dependency injection */
-    implementation("io.insert-koin:koin-core:3.2.2")
+    implementation("io.insert-koin:koin-core:3.3.3")
 
     /* toml - configuration format */
-    implementation("com.akuleshov7:ktoml-core:0.2.13")
-    implementation("com.akuleshov7:ktoml-file:0.2.13")
+    implementation("com.akuleshov7:ktoml-core:0.4.1")
+    implementation("com.akuleshov7:ktoml-file:0.4.1")
 
     /* naibu - utilities */
-    implementation("naibu.stdlib:naibu-core:1.0-RC.5")
-    implementation("naibu.stdlib:naibu-io:1.0-RC.5")
+    implementation("naibu.stdlib:naibu-core:1.0-RC.14")
+    implementation("naibu.stdlib:naibu-io:1.0-RC.14")
 
     // extensions
-    implementation("naibu.stdlib:naibu-koin:1.0-RC.5")
-    implementation("naibu.stdlib:naibu-ktor-server:1.0-RC.5")
-    implementation("naibu.stdlib:naibu-scrimage:1.0-RC.5")
+    implementation("naibu.stdlib:naibu-koin:1.0-RC.14")
+    implementation("naibu.stdlib:naibu-ktor-server:1.0-RC.14")
+    implementation("naibu.stdlib:naibu-scrimage:1.0-RC.14")
 
     /* kmongo - database connectivity */
-    implementation("org.litote.kmongo:kmongo-coroutine:4.7.1")
-    implementation("org.litote.kmongo:kmongo-coroutine-serialization:4.7.1")
+    implementation("org.litote.kmongo:kmongo-coroutine:4.8.0")
+    implementation("org.litote.kmongo:kmongo-coroutine-serialization:4.8.0")
 
     /* aws - s3 client */
     implementation("aws.sdk.kotlin:s3:0.17.5-beta")
-    implementation("aws.smithy.kotlin:http-client-engine-ktor:0.12.9")
+    implementation("aws.smithy.kotlin:http-client-engine-ktor:0.13.1")
 
     /*  - content type checking */
     implementation("com.github.overview:mime-types:6e273e3")
 
     /* ktor - server library */
-    implementation(platform("io.ktor:ktor-bom:2.1.3"))
+    implementation(platform("io.ktor:ktor-bom:2.2.4"))
 
     // client
     implementation("io.ktor:ktor-client-cio")
@@ -82,7 +82,7 @@ dependencies {
     implementation("io.ktor:ktor-serialization-kotlinx-json")
 
     /* misc */
-    implementation("ch.qos.logback:logback-classic:1.4.4") // slf4j implementation
+    implementation("ch.qos.logback:logback-classic:1.4.6") // slf4j implementation
     implementation("de.mkammerer:argon2-jvm-nolibs:2.11")  // password hashing
 }
 
