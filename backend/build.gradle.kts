@@ -22,7 +22,7 @@ repositories {
 }
 
 kotlin {
-    jvmToolchain(16)
+    jvmToolchain(17)
 }
 
 dependencies {
@@ -101,6 +101,6 @@ tasks {
     }
 
     compileKotlin {
-        compilerOptions.jvmTarget.set(JvmTarget.JVM_16)
+        compilerOptions.jvmTarget.set(JvmTarget.JVM_17)
     }
 }
