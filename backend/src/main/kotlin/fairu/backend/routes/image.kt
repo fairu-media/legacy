@@ -59,7 +59,7 @@ fun createBaseStatusImage(text: String):ImmutableImage {
 
 val BASE_NOT_FOUND      = createBaseStatusImage("This file doesn't exist.")
 val BASE_MISSING_OBJECT = createBaseStatusImage("Couldn't find an S3 object for this file.")
-val BASE_NO_CONTENT     = createBaseStatusImage("This file does not have any content/")
+val BASE_EMPTY          = createBaseStatusImage("This file is empty.")
 
 suspend fun PipelineContext<Unit, ApplicationCall>.respondStatusImage(base: ImmutableImage, fileName: String) {
     val image = base.toCanvas()
@@ -101,11 +101,11 @@ fun Route.image() = route("/{$FILE_NAME}") {
                     when (val body = it.body) {
                         is ByteStream.Buffer -> call.respondBytes(body.bytes(), ct)
 
-                        is ByteStream.OneShotStream -> call.respondBytesWriter(ct) {
+                        is ByteStream.OneShotStream -> call.respondBytesWriter(ct, contentLength = body.contentLength) {
                             body.readFrom().transferTo(this)
                         }
 
-                        is ByteStream.ReplayableStream -> call.respondBytesWriter(ct) {
+                        is ByteStream.ReplayableStream -> call.respondBytesWriter(ct, contentLength = body.contentLength) {
                             body.newReader().transferTo(this)
                         }
 
@@ -114,7 +114,7 @@ fun Route.image() = route("/{$FILE_NAME}") {
 
                             /* no point in having a blank file */
                             file.delete()
-                            respondStatusImage(BASE_NO_CONTENT, fileName)
+                            respondStatusImage(BASE_EMPTY, fileName)
                         }
                     }
 
