@@ -1,10 +1,11 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     application
 
-    kotlin("jvm") version "1.8.10"
-    kotlin("plugin.serialization") version "1.8.10"
+    kotlin("jvm") version "1.9.10"
+    kotlin("plugin.serialization") version "1.9.10"
 }
 
 group   = "fairu.backend"
@@ -20,38 +21,42 @@ repositories {
     maven("https://jitpack.io")
 }
 
+kotlin {
+    jvmToolchain(16)
+}
+
 dependencies {
     /* kotlin */
     implementation(kotlin("stdlib"))
 
     // coroutines
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
 
     // logging
-    implementation("io.github.microutils:kotlin-logging:3.0.5")
+    implementation("io.github.oshai:kotlin-logging:5.0.0")
 
     /* scrimage - image generation */
-    implementation("com.sksamuel.scrimage:scrimage-core:4.0.33")
+    implementation("com.sksamuel.scrimage:scrimage-core:4.0.39")
 
     /* koin - dependency injection */
-    implementation("io.insert-koin:koin-core:3.3.3")
+    implementation("io.insert-koin:koin-core:3.4.3")
 
     /* toml - configuration format */
-    implementation("com.akuleshov7:ktoml-core:0.4.1")
-    implementation("com.akuleshov7:ktoml-file:0.4.1")
+    implementation("com.akuleshov7:ktoml-core:0.5.0")
 
     /* naibu - utilities */
-    implementation("naibu.stdlib:naibu-core:1.0-RC.14")
-    implementation("naibu.stdlib:naibu-io:1.0-RC.14")
+    val naibu = "1.4-RC.6"
+    implementation("naibu.stdlib:naibu-core:$naibu")
+    implementation("naibu.stdlib:naibu-io:$naibu")
 
     // extensions
-    implementation("naibu.stdlib:naibu-koin:1.0-RC.14")
-    implementation("naibu.stdlib:naibu-ktor-server:1.0-RC.14")
-    implementation("naibu.stdlib:naibu-scrimage:1.0-RC.14")
+    implementation("naibu.stdlib:naibu-koin:$naibu")
+    implementation("naibu.stdlib:naibu-ktor-server:$naibu")
+    implementation("naibu.stdlib:naibu-scrimage:$naibu")
 
     /* kmongo - database connectivity */
-    implementation("org.litote.kmongo:kmongo-coroutine:4.8.0")
-    implementation("org.litote.kmongo:kmongo-coroutine-serialization:4.8.0")
+    implementation("org.litote.kmongo:kmongo-coroutine:4.10.0")
+    implementation("org.litote.kmongo:kmongo-coroutine-serialization:4.10.0")
 
     /* aws - s3 client */
     implementation("aws.sdk.kotlin:s3:0.17.5-beta")
@@ -61,7 +66,7 @@ dependencies {
     implementation("com.github.overview:mime-types:6e273e3")
 
     /* ktor - server library */
-    implementation(platform("io.ktor:ktor-bom:2.2.4"))
+    implementation(platform("io.ktor:ktor-bom:2.3.4"))
 
     // client
     implementation("io.ktor:ktor-client-cio")
@@ -82,7 +87,7 @@ dependencies {
     implementation("io.ktor:ktor-serialization-kotlinx-json")
 
     /* misc */
-    implementation("ch.qos.logback:logback-classic:1.4.6") // slf4j implementation
+    implementation("ch.qos.logback:logback-classic:1.4.11") // slf4j implementation
     implementation("de.mkammerer:argon2-jvm-nolibs:2.11")  // password hashing
 }
 
@@ -91,11 +96,11 @@ tasks {
         file("src/main/resources/version.txt").writeText(version.toString())
     }
 
-    withType<Jar> {
+    jar {
         dependsOn(writeVersion)
     }
 
-    withType<KotlinCompile> {
-        kotlinOptions.jvmTarget = "16"
+    compileKotlin {
+        compilerOptions.jvmTarget.set(JvmTarget.JVM_16)
     }
 }

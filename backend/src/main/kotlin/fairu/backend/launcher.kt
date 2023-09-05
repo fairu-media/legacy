@@ -3,7 +3,7 @@ package fairu.backend
 import aws.sdk.kotlin.services.s3.S3Client
 import aws.sdk.kotlin.services.s3.createBucket
 import aws.sdk.kotlin.services.s3.model.BucketCannedAcl
-import com.akuleshov7.ktoml.file.TomlFileReader
+import com.akuleshov7.ktoml.Toml
 import fairu.backend.exception.RequestFailedException
 import fairu.backend.routes.files.files
 import fairu.backend.routes.image
@@ -46,10 +46,13 @@ import naibu.logging.logging
 import naibu.math.toIntSafe
 import naibu.monads.expect
 import naibu.serialization.DefaultFormats
+import naibu.serialization.deserialize
 import naibu.serialization.json.Json
 import org.koin.core.context.startKoin
 import org.koin.dsl.module
 import org.litote.kmongo.eq
+import kotlin.io.path.Path
+import kotlin.io.path.readText
 
 val log by logging("fairu.backend.application")
 val configPath = System.getProperty("fairu.backend.config-path") ?: "fairu.toml"
@@ -59,7 +62,10 @@ suspend fun main() {
 
     /* load config */
     log.info { "* Loading configuration from '$configPath'" }
-    val config = TomlFileReader.decodeFromFile(Config.serializer(), configPath).fairu
+    val config = Path(configPath)
+        .readText()
+        .deserialize<Config>(Toml)
+        .fairu
 
     /* initialize dependency injection */
     startKoin {
@@ -141,7 +147,6 @@ suspend fun main() {
                         override fun serialize(session: Session): String = session.id.value
                             .toByteArray()
                             .encode(Base64)
-                            .decodeToString()
 
                         override fun deserialize(text: String): Session {
                             val id = BigEndian.getULong(
