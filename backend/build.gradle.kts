@@ -1,5 +1,4 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     application
@@ -59,8 +58,7 @@ dependencies {
     implementation("org.litote.kmongo:kmongo-coroutine-serialization:4.10.0")
 
     /* aws - s3 client */
-    implementation("aws.sdk.kotlin:s3:0.17.5-beta")
-    implementation("aws.smithy.kotlin:http-client-engine-ktor:0.13.1")
+    implementation("aws.sdk.kotlin:s3:0.32.0-beta")
 
     /*  - content type checking */
     implementation("com.github.overview:mime-types:6e273e3")

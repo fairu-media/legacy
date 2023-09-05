@@ -1,5 +1,8 @@
 package fairu.backend.utils
 
+import aws.sdk.kotlin.services.s3.model.BucketLocationConstraint
+import aws.smithy.kotlin.runtime.auth.awscredentials.Credentials
+import fairu.backend.utils.s3.Region
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -43,13 +46,21 @@ data class Config(val fairu: Fairu) {
 
         @Serializable
         data class S3(
-            val endpoint: String,
+            val region: Region,
             val bucket: String,
+
+            // endpoint config
+            @SerialName("path-style-access-enabled")
+            val pathStyleAccessEnabled: Boolean = false,
+            val endpoint: String,
+
+            // credentials
             @SerialName("access-key")
             val accessKey: String,
             @SerialName("secret-key")
             val secretKey: String,
-        )
+        ) {
+        }
 
         @Serializable
         data class Jwt(

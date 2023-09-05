@@ -1,6 +1,6 @@
 ### builder
 
-FROM azul/zulu-openjdk-debian:19-latest AS builder
+FROM azul/zulu-openjdk-debian:17-latest AS builder
 
 # Set working directory of builder
 WORKDIR /build/fairu
@@ -17,7 +17,7 @@ RUN ./gradlew installDist --stacktrace --no-daemon
 ### RUNNER
 
 # Use
-FROM azul/zulu-openjdk-debian:19-latest
+FROM azul/zulu-openjdk-debian:17-latest as runner
 
 # Install argon2 natives & fontconfig
 RUN apt-get -qq update

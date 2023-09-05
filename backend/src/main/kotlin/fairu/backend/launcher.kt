@@ -2,7 +2,6 @@ package fairu.backend
 
 import aws.sdk.kotlin.services.s3.S3Client
 import aws.sdk.kotlin.services.s3.createBucket
-import aws.sdk.kotlin.services.s3.model.BucketCannedAcl
 import com.akuleshov7.ktoml.Toml
 import fairu.backend.exception.RequestFailedException
 import fairu.backend.routes.files.files
@@ -87,7 +86,10 @@ suspend fun main() {
     if (config.s3.bucket !in buckets) {
         s3.createBucket {
             bucket = config.s3.bucket
-            acl = BucketCannedAcl.PublicReadWrite
+
+            createBucketConfiguration {
+                locationConstraint = config.s3.region
+            }
         }
     }
 

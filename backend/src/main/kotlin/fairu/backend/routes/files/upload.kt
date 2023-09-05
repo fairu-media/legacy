@@ -14,13 +14,8 @@ import io.ktor.http.*
 import io.ktor.http.content.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*
-import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import io.ktor.util.*
-import io.ktor.utils.io.*
 import io.ktor.utils.io.core.*
-import io.ktor.utils.io.jvm.javaio.*
-import io.ktor.utils.io.pool.*
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import naibu.common.generateUniqueId
@@ -58,7 +53,8 @@ fun Route.upload() = scopedAccess(AccessScope.FileUpload) {
             val file = File(
                 name,
                 call.authenticatedUser!!.id,
-                contentType
+                contentType = contentType,
+                contentLength = content.size.toLong()
             )
 
             file.save()

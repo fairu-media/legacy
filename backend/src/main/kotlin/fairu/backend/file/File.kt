@@ -9,7 +9,6 @@ import fairu.backend.utils.mongo.DocumentClass
 import fairu.backend.utils.mongo.SnowflakeDocument
 import fairu.backend.utils.mongo.collection
 import fairu.backend.utils.serialization.InstantAsLongSerializer
-import io.ktor.http.*
 import kotlinx.datetime.Instant
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.SerialName
@@ -34,7 +33,11 @@ data class File(
     /** The type of content this file contains. */
     @SerialName("content_type")
     @JsonNames("content_type", "contentType")
-    val contentType: String = "*/*"
+    val contentType: String = "*/*",
+    /**
+     * The length of the file content.
+     */
+    val contentLength: Long? = null
 ) : SnowflakeDocument {
     companion object : DocumentClass<File>(collection())
 
