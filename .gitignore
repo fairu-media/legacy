@@ -1,9 +1,4 @@
-### Build System
-
-.gradle
-build/
-
-### IDEs
+## IDEs
 
 # intellij
 .idea/

@@ -1,6 +1,6 @@
 # Fairu
 
-An image-hosting service written.
+A painless image-hosting server written in Kotlin
 
 - [My personal deployment](https://img.2d.gay) ([web ui](https://img.2d.gay/web))
 

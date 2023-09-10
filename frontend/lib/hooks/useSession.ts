@@ -1,27 +1,35 @@
 import { useRouter } from "next/router";
 import { useQuery } from "react-query";
-import { me } from "lib/api/users";
-import { frontendUrl } from "lib/contants";
+import * as session from "lib/api/session";
 
 export default function useSession({
     redirectTo = "",
     redirectIfFound = false,
 } = {}) {
     const router = useRouter();
+
     const { data, status } = useQuery(
         "@me", 
-        me,
+        session.current,
         {
-            onSuccess(user) {
+            async onSuccess(resp) {
+                if (typeof resp == "string") {
+                    await router.replace("?alert" + resp);
+                    return
+                }
+
                 if (!redirectTo) return;
 
-                if (user == null || redirectIfFound) {
-                    router.replace(frontendUrl + redirectTo)
+                if (!resp.logged_in || redirectIfFound) {
+                    await router.replace(redirectTo)
                 }
             }
         }
     );
 
-    return { session: data, status };
+    return {
+        session: typeof data === "string" ? null : data?.user,
+        status
+    };
 }
  

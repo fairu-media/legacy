@@ -1,7 +1,6 @@
 {
   "name": "frontend",
   "version": "0.1.0",
-  "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -10,17 +9,19 @@
   },
   "dependencies": {
     "@blueprintjs/core": "^4.11.5",
+    "@blueprintjs/datetime2": "^0.8.1",
     "@blueprintjs/popover2": "^1.8.0",
+    "@blueprintjs/table": "^4.7.6",
+    "date-fns": "^2.29.3",
+    "formik": "^2.2.9",
     "masonic": "^3.7.0",
     "next": "13.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-hook-form": "^7.38.0",
+    "react-dropzone": "^14.2.3",
     "react-hot-toast": "^2.4.0",
     "react-icons": "^4.6.0",
-    "react-masonry-component": "^6.3.0",
     "react-query": "^3.39.2",
-    "tailwindcss": "^3.2.1",
     "zod": "^3.19.1"
   },
   "devDependencies": {
@@ -31,6 +32,8 @@
     "eslint": "8.26.0",
     "eslint-config-next": "13.0.0",
     "postcss": "^8.4.18",
+    "tailwindcss": "^3.2.1",
+    "sass": "^1.55.0",
     "typescript": "4.8.4"
   }
 }

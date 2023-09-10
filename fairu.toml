@@ -1,4 +1,4 @@
-[fairu]
+[fairu.management]
 allowed-usernames = [ "melike2d" ]
 
 [fairu.server]
@@ -6,9 +6,9 @@ host = "0.0.0.0"
 port = 3232
 
 [fairu.s3]
-endpoint   = "http://127.0.0.1:9199"
-bucket     = "cdn"
-access-key = "cdn"
+endpoint   = "http://127.0.0.1:9000"
+bucket     = "fairu"
+access-key = "fairu"
 secret-key = "password"
 
 [fairu.jwt]

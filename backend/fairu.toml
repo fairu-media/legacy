@@ -1,0 +1,23 @@
+[fairu.management]
+allowed-usernames = [ "melike2d" ]
+
+[fairu.server]
+host = "0.0.0.0"
+port = 3232
+
+[fairu.s3]
+endpoint                  = "http://127.0.0.1:9000"
+path-style-access-enabled = true
+
+access-key = "fairu"
+secret-key = "password"
+
+bucket = "fairu"
+region = "us-west-2"
+
+[fairu.jwt]
+secret = "example secret"
+
+[fairu.db]
+uri = "mongodb://localhost:27017/?retryWrites=true"
+database-name = "fairu"
