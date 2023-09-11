@@ -2,6 +2,7 @@ package fairu.frontend.routes
 
 import fairu.frontend.components.ButtonVariant
 import fairu.frontend.components.buttonStyles
+import fairu.frontend.components.navbarRoutes
 import fairu.frontend.layout.rootLayout
 import fairu.frontend.routes.auth.auth
 import fairu.frontend.routes.me.me
@@ -53,16 +54,19 @@ fun Routing.index() {
             preCompressed(CompressedFileType.GZIP)
         }
 
-        authenticate("session", optional = true) {
-            get {
-                call.respondHTML {
-                    rootLayout(call) {
-                        // TODO: home page
-                    }
+        navbarRoutes()
+
+        get {
+            call.respondHTML {
+                rootLayout(call) {
+                    // TODO: home page
                 }
             }
+        }
 
-            me()
+        me()
+
+        authenticate("session", optional = true) {
             auth()
         }
     }

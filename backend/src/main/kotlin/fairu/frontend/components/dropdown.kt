@@ -2,6 +2,7 @@ package fairu.frontend.components
 
 import fairu.frontend.utils.hyperscript
 import kotlinx.html.FlowContent
+import kotlinx.html.TagConsumer
 import kotlinx.html.button
 import kotlinx.html.div
 
@@ -19,7 +20,9 @@ class DropdownBuilder {
     }
 }
 
-fun FlowContent.dropdown(block: DropdownBuilder.() -> Unit) {
+fun FlowContent.dropdown(block: DropdownBuilder.() -> Unit) = consumer.dropdown(block)
+
+fun TagConsumer<*>.dropdown(block: DropdownBuilder.() -> Unit) {
     val dropdown = DropdownBuilder()
         .apply(block)
 

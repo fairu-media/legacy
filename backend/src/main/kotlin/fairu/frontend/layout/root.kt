@@ -54,7 +54,7 @@ inline fun HTMLBuilder.rootLayout(
         body(classes = "bg-zinc-900 text-zinc-100 h-screen") {
             htmx.ext = "morph"
 
-            navbar(call)
+            navbar()
             content(containerized, block)
         }
     }
