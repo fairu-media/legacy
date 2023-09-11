@@ -16,7 +16,6 @@ import io.ktor.server.request.*
 import io.ktor.server.routing.*
 import io.ktor.server.sessions.*
 import kotlinx.serialization.*
-import kotlinx.serialization.json.*
 import org.litote.kmongo.eq
 
 @Serializable
@@ -25,6 +24,30 @@ data class GetSessionResponse(
     val loggedIn: Boolean,
     val user: CensoredUser?
 )
+
+suspend fun Credentials.login(call: ApplicationCall): Boolean {
+    /* find user with supplied username in db. */
+    val user = User.find(User::username eq username)
+        ?: return false
+
+    /* verify passwords */
+    val verified = Hash.verify(
+        user.password,
+        password.toCharArray()
+    )
+
+    if (!verified) {
+        return false
+    }
+
+    /* create a new user session and save it to the database. */
+    val userSession = UserSession(user.id)
+    userSession.save()
+
+    /* finish up */
+    call.sessions.set(Session(userSession.id))
+    return true
+}
 
 fun Route.session() = route("/session") {
     authenticate("session", optional = true) {
@@ -55,27 +78,10 @@ fun Route.session() = route("/session") {
         }
 
         val creds = call.receive<Credentials>()
-
-        /* find user with supplied username in db. */
-        val user = User.find(User::username eq creds.username)
-            ?: failure(HttpStatusCode.Unauthorized, "Invalid username or password.")
-
-        /* verify passwords */
-        val verified = Hash.verify(
-            user.password,
-            creds.password.toCharArray()
-        )
-
-        if (!verified) {
+        if (creds.login(call)) {
+            respond(mapOf("message" to "Welcome back ${creds.username}!"))
+        } else {
             failure(HttpStatusCode.Unauthorized, "Invalid username or password.")
         }
-
-        /* create a new user session and save it to the database. */
-        val userSession = UserSession(user.id)
-        userSession.save()
-
-        /* finish up */
-        call.sessions.set(Session(userSession.id))
-        respond(mapOf("message" to "Welcome back ${user.username}!"))
     }
 }

@@ -12,12 +12,12 @@ import fairu.backend.user.Session
 import fairu.backend.user.UserPrincipal
 import fairu.backend.user.access.AccessToken
 import fairu.backend.user.session.UserSession
-import fairu.backend.utils.BasicResponse
-import fairu.backend.utils.Config
-import fairu.backend.utils.Snowflake
-import fairu.backend.utils.Version
+import fairu.backend.utils.*
 import fairu.backend.utils.auth.Token
 import fairu.backend.utils.awt.registerFonts
+import fairu.frontend.routes.index
+import fairu.frontend.routes.isFrontend
+import fairu.frontend.routes.notFound
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
@@ -28,6 +28,7 @@ import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.plugins.cors.routing.*
 import io.ktor.server.plugins.defaultheaders.*
 import io.ktor.server.plugins.statuspages.*
+import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.sessions.*
@@ -134,6 +135,15 @@ suspend fun main() {
                         BasicResponse(mapOf("message" to cause.message), false)
                     )
                 }
+
+                status(HttpStatusCode.NotFound) { call, status ->
+                    if (call.isFrontend) {
+                        call.notFound()
+                    } else {
+                        val response = BasicResponse(Message("${call.request.path()} was not found!"), false)
+                        call.respond(status, response)
+                    }
+                }
             }
 
             install(DefaultHeaders) {
@@ -205,6 +215,9 @@ suspend fun main() {
             }
 
             routing {
+                // frontend
+                index()
+
                 // api
                 route("/v1") {
                     // /login

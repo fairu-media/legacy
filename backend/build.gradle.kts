@@ -3,15 +3,18 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 plugins {
     application
 
+    id("io.ktor.plugin") version "2.3.4"
+
     kotlin("jvm") version "1.9.10"
     kotlin("plugin.serialization") version "1.9.10"
 }
 
-group   = "fairu.backend"
+group = "fairu.backend"
 version = "2.0"
 
 application {
     mainClass.set("fairu.backend.LauncherKt")
+    applicationDefaultJvmArgs = listOf("-Dio.ktor.development=true")
 }
 
 repositories {
@@ -60,11 +63,14 @@ dependencies {
     /* aws - s3 client */
     implementation("aws.sdk.kotlin:s3:0.32.0-beta")
 
-    /*  - content type checking */
+    /* content type checking */
     implementation("com.github.overview:mime-types:6e273e3")
 
     /* ktor - server library */
     implementation(platform("io.ktor:ktor-bom:2.3.4"))
+
+    //
+    implementation("org.jetbrains.kotlinx:kotlinx-html:0.9.1")
 
     // client
     implementation("io.ktor:ktor-client-cio")

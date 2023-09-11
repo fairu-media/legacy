@@ -7,6 +7,7 @@ import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import naibu.ext.intoOrNull
 
 // TODO: Find way to make ApplicationCall#principal return null in-case of missing scope.
 // TODO: Improve communication of missing scopes.
@@ -37,3 +38,5 @@ fun Route.scopedAccess(
 val ApplicationCall.authenticatedUser: User?
     get() = principal<UserPrincipal>()?.user
 
+val ApplicationCall.ps: UserPrincipal.Session?
+    get() = principal<UserPrincipal>()?.intoOrNull()
