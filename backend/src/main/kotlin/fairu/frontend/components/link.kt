@@ -14,5 +14,7 @@ fun FlowContent.link(name: String, href: String, classes: String = buttonStyles(
             get = href
         }
 
+        attributes["role"] = "link"
+
         +name
     }

@@ -27,7 +27,7 @@ inline fun HTMLBuilder.rootLayout(call: ApplicationCall, containerized: Boolean 
             meta(name = "viewport", charset = "UTF-8", content = "width=device-width, initial-scale=1.0")
             title("Fairu")
 
-            // HTMX & Hyperwind
+            // HTMX, Hyperscript, and Idiomorph
             script(src = "https://unpkg.com/htmx.org@1.9.3") {}
             script(src = "https://unpkg.com/hyperscript.org@0.9.11") {}
             script(src="https://unpkg.com/idiomorph/dist/idiomorph-ext.min.js") {}
