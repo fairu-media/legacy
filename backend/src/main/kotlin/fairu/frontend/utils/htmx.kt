@@ -1,6 +1,8 @@
 package fairu.frontend.utils
 
+import io.ktor.http.*
 import io.ktor.server.application.*
+import io.ktor.server.response.*
 import kotlinx.html.CommonAttributeGroupFacade
 import kotlinx.html.attributes.*
 import kotlin.properties.ReadWriteProperty
@@ -13,7 +15,16 @@ inline fun CommonAttributeGroupFacade.htmx(crossinline block: HTMX.() -> Unit) {
     htmx.block()
 }
 
-val ApplicationCall.isHTMX: Boolean get() = request.headers["HX-Request"]  == "true"
+suspend fun ApplicationCall.redirect(to: String) {
+    if (isHTMX) {
+        response.header("HX-Redirect", to)
+        respond(HttpStatusCode.NoContent)
+    } else {
+        respondRedirect(to)
+    }
+}
+
+val ApplicationCall.isHTMX: Boolean get() = request.headers["HX-Request"] == "true"
 
 class HTMX(private val facade: CommonAttributeGroupFacade) {
     /**

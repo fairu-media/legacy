@@ -2,6 +2,7 @@ package fairu.frontend.components
 
 import fairu.backend.user.UserPrincipal
 import fairu.frontend.layout.containerClasses
+import fairu.frontend.utils.hyperscript
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import kotlinx.html.*
@@ -28,8 +29,17 @@ fun BODY.navbar(call: ApplicationCall) {
             div(classes = "flex items-center space-x-1.5") {
                 div {
                     val principal = call.principal<UserPrincipal.Session>()
-                    if (principal != null) {
-                        +principal.user.username
+                    if (principal != null) dropdown {
+                        trigger {
+                            +principal.user.username
+                        }
+
+                        menu {
+                            val classes = "${buttonStyles(ButtonVariant.Ghost, ButtonSize.Small)} !block"
+                            link("Profile", "/-/@me/profile", classes)
+                            link("Settings", "/-/@me/settings", classes)
+                            link("Files", "/-/@me/files", classes)
+                        }
                     } else {
                         link("Login", "/-/auth/login")
                     }

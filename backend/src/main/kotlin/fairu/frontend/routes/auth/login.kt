@@ -8,11 +8,12 @@ import fairu.frontend.components.buttonStyles
 import fairu.frontend.components.link
 import fairu.frontend.layout.rootLayout
 import fairu.frontend.utils.htmx
+import fairu.frontend.utils.redirect
 import fairu.frontend.utils.respondHTML
 import io.ktor.server.application.*
-import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.html.*
+import naibu.ext.print
 
 fun Route.login() = route("/login") {
     accountForm.registerEndpoints(this)
@@ -20,7 +21,7 @@ fun Route.login() = route("/login") {
     post {
         val credentials = call.receiveCredentials()
         if (credentials.login(call)) {
-            call.respondRedirect("/-/@me")
+            call.redirect("/-/@me")
         } else {
             call.respondHTML {
                 div(classes = "bg-red-400/30 text-center font-bold mb-6 rounded px-4 py-2.5 shadow") {
@@ -33,7 +34,7 @@ fun Route.login() = route("/login") {
 
     get {
         if (call.ps != null) {
-            return@get call.respondRedirect("/-/@me")
+            return@get call.redirect("/-/@me")
         }
 
         call.respondHTML {
@@ -65,10 +66,10 @@ fun Route.login() = route("/login") {
                         button(type = ButtonType.submit, classes = buttonStyles()) {
                             +"Login"
                         }
-                        
+
                         link("Forgot Password", "/-/auth/forgot-password", buttonStyles(ButtonVariant.Warning))
 
-//                        link("Register", "/-/auth/sign-up", buttonStyles(ButtonVariant.Ghost))
+                        //                        link("Register", "/-/auth/sign-up", buttonStyles(ButtonVariant.Ghost))
                     }
                 }
             }

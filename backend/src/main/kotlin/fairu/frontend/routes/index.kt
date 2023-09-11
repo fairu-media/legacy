@@ -4,9 +4,11 @@ import fairu.frontend.components.ButtonVariant
 import fairu.frontend.components.buttonStyles
 import fairu.frontend.layout.rootLayout
 import fairu.frontend.routes.auth.auth
+import fairu.frontend.routes.me.me
 import fairu.frontend.utils.hyperscript
 import fairu.frontend.utils.respondHTML
 import io.ktor.server.application.*
+import io.ktor.server.auth.*
 import io.ktor.server.routing.*
 import io.ktor.server.http.content.*
 import io.ktor.server.request.*
@@ -51,14 +53,17 @@ fun Routing.index() {
             preCompressed(CompressedFileType.GZIP)
         }
 
-        get {
-            call.respondHTML {
-                rootLayout(call) {
-                    // TODO: home page
+        authenticate("session", optional = true) {
+            get {
+                call.respondHTML {
+                    rootLayout(call) {
+                        // TODO: home page
+                    }
                 }
             }
-        }
 
-        auth()
+            me()
+            auth()
+        }
     }
 }

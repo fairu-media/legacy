@@ -7,14 +7,19 @@ import fairu.frontend.utils.isHTMX
 import io.ktor.server.application.*
 import kotlinx.html.*
 
-var containerClasses = "container px-4 mx-auto max-w-[475px]"
+val containerClasses = "container px-4 mx-auto max-w-[475px]"
 
-inline fun HTMLBuilder.content(containerized: Boolean = false, crossinline block: DIV.() -> Unit) = div(classes = if (containerized) "py-6 $containerClasses" else null) {
-    id = "content"
-    block()
-}
+inline fun HTMLBuilder.content(containerized: Boolean = false, crossinline block: DIV.() -> Unit) =
+    div(classes = if (containerized) "py-6 $containerClasses" else null) {
+        id = "content"
+        block()
+    }
 
-inline fun HTMLBuilder.rootLayout(call: ApplicationCall, containerized: Boolean = true, crossinline block: DIV.() -> Unit) {
+inline fun HTMLBuilder.rootLayout(
+    call: ApplicationCall,
+    containerized: Boolean = true,
+    crossinline block: DIV.() -> Unit
+) {
     if (call.isHTMX) {
         content(containerized, block)
         return
@@ -30,7 +35,7 @@ inline fun HTMLBuilder.rootLayout(call: ApplicationCall, containerized: Boolean 
             // HTMX, Hyperscript, and Idiomorph
             script(src = "https://unpkg.com/htmx.org@1.9.3") {}
             script(src = "https://unpkg.com/hyperscript.org@0.9.11") {}
-            script(src="https://unpkg.com/idiomorph/dist/idiomorph-ext.min.js") {}
+            script(src = "https://unpkg.com/idiomorph/dist/idiomorph-ext.min.js") {}
 
             // TailwindCSS
             link(href = "/-/static/styles.css", rel = "stylesheet")
@@ -48,7 +53,7 @@ inline fun HTMLBuilder.rootLayout(call: ApplicationCall, containerized: Boolean 
 
         body(classes = "bg-zinc-900 text-zinc-100 h-screen") {
             htmx.ext = "morph"
-            
+
             navbar(call)
             content(containerized, block)
         }

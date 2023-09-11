@@ -3,7 +3,7 @@ package fairu.frontend.routes.auth
 import fairu.frontend.utils.buildForm
 import kotlinx.html.InputType
 
-val accountForm = buildForm("/-/auth/login") {
+val accountForm = buildForm("/-/auth") {
     field {
         name = "username"
         type = InputType.text

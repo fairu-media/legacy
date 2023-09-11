@@ -16,4 +16,4 @@ enum class ButtonSize(val classes: String) {
 }
 
 fun buttonStyles(variant: ButtonVariant = ButtonVariant.Primary, size: ButtonSize = ButtonSize.Default, classes: String = "") =
-    "${variant.classes} ${size.classes} rounded inline-block $classes".trim()
+    "${variant.classes} ${size.classes} rounded inline-block cursor-pointer $classes".trim()
