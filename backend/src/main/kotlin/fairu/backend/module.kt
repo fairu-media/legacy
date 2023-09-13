@@ -7,6 +7,7 @@ import aws.smithy.kotlin.runtime.net.Url
 import fairu.backend.utils.Config
 import fairu.backend.utils.mongo.Database
 import fairu.backend.utils.mongo.DatabaseClient
+import naibu.ext.ktor.client.HttpClientTools
 import naibu.logging.logging
 import org.koin.dsl.bind
 import org.koin.dsl.module
@@ -17,6 +18,8 @@ import org.overviewproject.mime_types.MimeTypeDetector
 
 val fairuModule = module {
     val log by logging("fairu.backend.dependencies")
+
+    single { HttpClientTools.createDefaultHttpClient() }
 
     single { MimeTypeDetector() }
 

@@ -3,15 +3,15 @@ package fairu.frontend.utils
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.response.*
-import kotlinx.html.CommonAttributeGroupFacade
+import kotlinx.html.FlowContent
 import kotlinx.html.attributes.*
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
-val CommonAttributeGroupFacade.htmx: HTMX
+val FlowContent.htmx: HTMX
     get() = HTMX(this)
 
-inline fun CommonAttributeGroupFacade.htmx(crossinline block: HTMX.() -> Unit) {
+inline fun FlowContent.htmx(crossinline block: HTMX.() -> Unit) {
     htmx.block()
 }
 
@@ -26,7 +26,7 @@ suspend fun ApplicationCall.redirect(to: String) {
 
 val ApplicationCall.isHTMX: Boolean get() = request.headers["HX-Request"] == "true"
 
-class HTMX(private val facade: CommonAttributeGroupFacade) {
+class HTMX(private val facade: FlowContent) {
     /**
      * The [**hx-boost**](https://htmx.org/attributes/hx-boost) attribute allows you to \"boost\" normal anchors and
      * form tags to use AJAX instead. This has the [nice fallback](https://en.wikipedia.org/wiki/Progressive_enhancement)

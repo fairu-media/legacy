@@ -4,10 +4,10 @@ import aws.sdk.kotlin.services.s3.S3Client
 import aws.sdk.kotlin.services.s3.putObject
 import aws.smithy.kotlin.runtime.content.ByteStream
 import fairu.backend.exception.failure
-import fairu.backend.file.File
-import fairu.backend.user.access.AccessScope
-import fairu.backend.user.access.authenticatedUser
-import fairu.backend.user.access.scopedAccess
+import fairu.shared.file.File
+import fairu.shared.user.access.AccessScope
+import fairu.shared.user.access.authenticatedUser
+import fairu.shared.user.access.scopedAccess
 import fairu.backend.utils.Config
 import fairu.backend.utils.ext.respond
 import io.ktor.http.*

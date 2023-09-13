@@ -1,4 +1,4 @@
-package fairu.backend.file
+package fairu.shared.file
 
 import aws.sdk.kotlin.services.s3.S3Client
 import aws.sdk.kotlin.services.s3.deleteObject

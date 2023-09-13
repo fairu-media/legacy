@@ -1,4 +1,4 @@
-package fairu.backend.user
+package fairu.shared.user
 
 import fairu.backend.utils.Snowflake
 import fairu.backend.utils.mongo.DocumentClass

@@ -1,50 +1,46 @@
 package fairu.frontend.routes
 
-import fairu.frontend.components.ButtonVariant
-import fairu.frontend.components.buttonStyles
-import fairu.frontend.components.navbarRoutes
-import fairu.frontend.layout.rootLayout
+import fairu.backend.exception.failure
+import fairu.frontend.components.server.*
+import fairu.frontend.components.*
 import fairu.frontend.routes.auth.auth
 import fairu.frontend.routes.me.me
-import fairu.frontend.utils.hyperscript
-import fairu.frontend.utils.respondHTML
+import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.routing.*
 import io.ktor.server.http.content.*
 import io.ktor.server.request.*
+import io.ktor.server.response.*
 import io.ktor.util.*
-import kotlinx.html.button
-import kotlinx.html.p
-import kotlinx.html.span
 
 val IsFrontend = AttributeKey<Boolean>("Fairu-IsFrontend")
 
 val ApplicationCall.isFrontend: Boolean
     get() = (attributes.getOrNull(IsFrontend) == true) || request.path().startsWith("/-")
 
-suspend fun ApplicationCall.notFound() = respondHTML {
-    rootLayout(this@notFound) {
-        span(classes = "font-mono font-bold") {
-            +request
-                .path()
-                .removePrefix("/-")
-
-            +" 404 NOT FOUND"
-        }
-
-        p(classes = "font-light") {
-            +"Seems like you've hit an unknown page!"
-        }
-
-        button(classes = buttonStyles(ButtonVariant.Ghost, classes = "cursor-pointer")) {
-            hyperscript = "on click js window.history.back() end"
-            +"Go Back"
-        }
-    }
-}
-
 fun Routing.index() {
+    navbarRoutes()
+    serverComponents()
+
+    // icon rendering
+    get("/~/icon/{set}/{name}") {
+        // get the icon set name.
+        val set = call.parameters["set"]
+            ?: failure(HttpStatusCode.BadRequest, "no icon set")
+
+        // get the icon name.
+        val name = call.parameters["name"]
+            ?.substringBeforeLast('.')
+            ?.takeUnless { it.isBlank() }
+            ?: failure(HttpStatusCode.BadRequest, "no icon name")
+
+        call.respondText(
+            Icon(set, name).fetchSVG(),
+            contentType = ContentType.Text.Html
+        )
+    }
+
     route("/-") {
         intercept(ApplicationCallPipeline.Setup) {
             call.attributes.put(IsFrontend, true)
@@ -54,19 +50,16 @@ fun Routing.index() {
             preCompressed(CompressedFileType.GZIP)
         }
 
-        navbarRoutes()
-
         get {
-            call.respondHTML {
-                rootLayout(call) {
-                    // TODO: home page
-                }
-            }
+            call.respondRedirect("/-/home")
         }
 
-        me()
+        // pages
+        home()
 
         authenticate("session", optional = true) {
+            me()
+
             auth()
         }
     }

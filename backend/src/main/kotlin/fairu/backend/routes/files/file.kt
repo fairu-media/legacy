@@ -1,10 +1,10 @@
 package fairu.backend.routes.files
 
 import fairu.backend.exception.failure
-import fairu.backend.file.File
-import fairu.backend.user.UserPrincipal
-import fairu.backend.user.access.AccessScope
-import fairu.backend.user.access.scopedAccess
+import fairu.shared.file.File
+import fairu.shared.user.UserPrincipal
+import fairu.shared.user.access.AccessScope
+import fairu.shared.user.access.scopedAccess
 import fairu.backend.utils.Snowflake
 import fairu.backend.utils.ext.respond
 import io.ktor.http.*

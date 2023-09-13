@@ -1,7 +1,7 @@
 package fairu.backend.routes.users.tokens
 
 import fairu.backend.exception.failure
-import fairu.backend.user.access.AccessToken
+import fairu.shared.user.access.AccessToken
 import fairu.backend.utils.Message
 import fairu.backend.utils.Snowflake
 import fairu.backend.utils.ext.respond

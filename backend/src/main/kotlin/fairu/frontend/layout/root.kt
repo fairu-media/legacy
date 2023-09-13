@@ -1,6 +1,8 @@
 package fairu.frontend.layout
 
+import fairu.frontend.components.footer
 import fairu.frontend.components.navbar
+import fairu.frontend.components.spinner
 import fairu.frontend.utils.HTMLBuilder
 import fairu.frontend.utils.htmx
 import fairu.frontend.utils.isHTMX
@@ -56,6 +58,12 @@ inline fun HTMLBuilder.rootLayout(
 
             navbar()
             content(containerized, block)
+            footer()
+
+            div(classes = "absolute left-5 bottom-5 htmx-indicator") {
+                id = "page-loading"
+                spinner(classes = "h-4 w-4")
+            }
         }
     }
 }

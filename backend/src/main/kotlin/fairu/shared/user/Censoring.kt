@@ -1,4 +1,4 @@
-package fairu.backend.user
+package fairu.shared.user
 
 import kotlinx.serialization.*
 import kotlinx.serialization.json.*

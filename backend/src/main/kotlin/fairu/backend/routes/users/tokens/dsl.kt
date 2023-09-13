@@ -1,7 +1,7 @@
 package fairu.backend.routes.users.tokens
 
-import fairu.backend.user.access.AccessToken
-import fairu.backend.user.access.authenticatedUser
+import fairu.shared.user.access.AccessToken
+import fairu.shared.user.access.authenticatedUser
 import fairu.backend.utils.ext.respond
 import io.ktor.server.application.*
 import io.ktor.server.auth.*

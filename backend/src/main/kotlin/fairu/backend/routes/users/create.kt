@@ -1,8 +1,8 @@
 package fairu.backend.routes.users
 
 import fairu.backend.exception.failure
-import fairu.backend.user.CensoringUserSerializer
-import fairu.backend.user.User
+import fairu.shared.user.CensoringUserSerializer
+import fairu.shared.user.User
 import fairu.backend.utils.Config
 import fairu.backend.utils.auth.Credentials
 import fairu.backend.utils.auth.Hash

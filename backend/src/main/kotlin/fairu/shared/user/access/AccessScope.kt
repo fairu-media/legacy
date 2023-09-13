@@ -1,4 +1,4 @@
-package fairu.backend.user.access
+package fairu.shared.user.access
 
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable

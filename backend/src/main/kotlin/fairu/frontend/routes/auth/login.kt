@@ -1,7 +1,7 @@
 package fairu.frontend.routes.auth
 
 import fairu.backend.routes.login
-import fairu.backend.user.access.ps
+import fairu.shared.user.access.ps
 import fairu.backend.utils.auth.receiveCredentials
 import fairu.frontend.components.ButtonVariant
 import fairu.frontend.components.buttonStyles

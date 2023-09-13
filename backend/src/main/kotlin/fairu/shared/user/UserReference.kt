@@ -1,4 +1,4 @@
-package fairu.backend.user
+package fairu.shared.user
 
 import fairu.backend.utils.Snowflake
 import org.litote.kmongo.eq

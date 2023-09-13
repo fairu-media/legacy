@@ -1,35 +1,43 @@
 package fairu.frontend.components
 
-import fairu.backend.user.UserPrincipal
+import fairu.shared.user.access.ps
 import fairu.frontend.layout.containerClasses
 import fairu.frontend.utils.htmx
-import fairu.frontend.utils.respondHTML
+import fairu.frontend.components.server.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.routing.*
-import kotlinx.coroutines.delay
 import kotlinx.html.*
-import kotlin.time.Duration.Companion.seconds
+
+val navbarSession = serverComponent("navbar-session", register = false) {
+    handle { call ->
+        val principal = call.ps
+        if (principal != null) dropdown {
+            trigger {
+                +principal.user.username
+            }
+
+            menu {
+                link("Profile",  "/@me/profile",  Icon("ri", "user-3-fill"))
+                link("Files",    "/@me/files",    Icon("ri", "file-3-fill"))
+                link("Settings", "/@me/settings", Icon("ri", "settings-3-fill"))
+            }
+        } else {
+            link("Login", "/auth/login")
+        }
+    }
+
+    load {
+        htmx.indicator = "#indicator"
+        spinner(classes = "h-6 w-6") {
+            id = "indicator"
+        }
+    }
+}
 
 fun Route.navbarRoutes() = authenticate("session", optional = true) {
-    get("/~/navbar/session") {
-        call.respondHTML {
-            val principal = call.principal<UserPrincipal.Session>()
-            if (principal != null) dropdown {
-                trigger {
-                    +principal.user.username
-                }
-
-                menu {
-                    val classes = "${buttonStyles(ButtonVariant.Ghost, ButtonSize.Small)} !block"
-                    link("Profile", "/-/@me/profile", classes)
-                    link("Settings", "/-/@me/settings", classes)
-                    link("Files", "/-/@me/files", classes)
-                }
-            } else {
-                link("Login", "/-/auth/login")
-            }
-        }
+    get("~/hsc/navbar-session") {
+        navbarSession.handle(call)
     }
 }
 
@@ -48,22 +56,11 @@ fun BODY.navbar() {
                 }
 
                 div(classes = "flex items-center justify-between space-x-1.5") {
-                    link("Home", "/-")
+                    link("Home", "/home")
                 }
             }
 
-            div(classes = "flex items-center space-x-1.5") {
-                div {
-                    htmx.indicator = "#indicator"
-                    htmx.trigger = "load"
-                    htmx.swap = "outerHTML"
-                    htmx.get = "/-/~/navbar/session"
-
-                    spinner(classes = "h-6 w-6") {
-                        id = "indicator"
-                    }
-                }
-            }
+            navbarSession.render(this)
         }
     }
 }

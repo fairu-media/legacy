@@ -3,7 +3,7 @@ package fairu.backend.utils.auth
 import com.auth0.jwt.JWT
 import com.auth0.jwt.JWTCreator
 import com.auth0.jwt.algorithms.Algorithm
-import fairu.backend.user.User
+import fairu.shared.user.User
 import fairu.backend.utils.Config
 import naibu.ext.koin.get
 

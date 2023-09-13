@@ -1,8 +1,8 @@
-package fairu.backend.user
+package fairu.shared.user
 
-import fairu.backend.user.access.AccessScope
-import fairu.backend.user.access.AccessToken
-import fairu.backend.user.session.UserSession
+import fairu.shared.user.access.AccessScope
+import fairu.shared.user.access.AccessToken
+import fairu.shared.user.session.UserSession
 import io.ktor.server.auth.*
 
 sealed class UserPrincipal(val user: User) : Principal {

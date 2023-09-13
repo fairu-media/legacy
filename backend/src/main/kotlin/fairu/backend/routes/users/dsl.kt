@@ -1,6 +1,6 @@
 package fairu.backend.routes.users
 
-import fairu.backend.user.User
+import fairu.shared.user.User
 import fairu.backend.utils.ext.respond
 import io.ktor.server.application.*
 import io.ktor.server.routing.*

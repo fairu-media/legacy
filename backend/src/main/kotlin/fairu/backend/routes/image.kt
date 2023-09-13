@@ -11,8 +11,8 @@ import com.sksamuel.scrimage.Position
 import com.sksamuel.scrimage.nio.ImmutableImageLoader
 import com.sksamuel.scrimage.nio.PngWriter
 import fairu.backend.exception.failure
-import fairu.backend.file.File
-import fairu.backend.user.access.authenticatedUser
+import fairu.shared.file.File
+import fairu.shared.user.access.authenticatedUser
 import fairu.backend.utils.Config
 import fairu.backend.utils.awt.RUBIK_REGULAR
 import fairu.backend.utils.awt.SOURCE_CODE_PRO_BOLD

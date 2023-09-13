@@ -1,12 +1,12 @@
 package fairu.frontend.components
 
-import fairu.frontend.utils.stringAttribute
+import fairu.frontend.utils.*
 import kotlinx.html.*
 
-fun FlowContent.spinner(classes: String = "", block: SVG.() -> Unit) =
+fun FlowContent.spinner(classes: String = "", block: SVG.() -> Unit = {}) =
     svg(classes = "inline animate-spin fill-white/50 text-gray-300/30 $classes".trim()) {
-        attributes["viewBox"] = "0 0 100 101"
-        attributes["fill"] = "none"
+        viewBox = "0 0 100 101"
+        fill = "none"
 
         block()
 
@@ -22,18 +22,3 @@ fun FlowContent.spinner(classes: String = "", block: SVG.() -> Unit) =
             fill = "currentFill"
         }
     }
-
-inline fun FlowContent.path(classes: String? = null, crossinline block: PATH.() -> Unit): Unit =
-    PATH(attributesMapOf("class", classes), consumer).visit(block)
-
-@Suppress("unused")
-open class PATH(initialAttributes: Map<String, String>, override val consumer: TagConsumer<*>) :
-    HTMLTag("PATH", consumer, initialAttributes, null, false, false),
-    HtmlBlockInlineTag {
-    var d: String
-        get() = stringAttribute[this, "d"]
-        set(value) = stringAttribute.set(this, "d", value)
-    var fill: String
-        get() = stringAttribute[this, "fill"]
-        set(value) = stringAttribute.set(this, "fill", value)
-}

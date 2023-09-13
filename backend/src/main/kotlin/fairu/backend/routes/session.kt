@@ -1,11 +1,11 @@
 package fairu.backend.routes
 
 import fairu.backend.exception.failure
-import fairu.backend.user.CensoredUser
-import fairu.backend.user.Session
-import fairu.backend.user.User
-import fairu.backend.user.UserPrincipal
-import fairu.backend.user.session.UserSession
+import fairu.shared.user.CensoredUser
+import fairu.shared.user.Session
+import fairu.shared.user.User
+import fairu.shared.user.UserPrincipal
+import fairu.shared.user.session.UserSession
 import fairu.backend.utils.auth.Credentials
 import fairu.backend.utils.auth.Hash
 import fairu.backend.utils.ext.respond

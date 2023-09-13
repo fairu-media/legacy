@@ -1,13 +1,13 @@
 package fairu.backend.routes.users
 
 import fairu.backend.exception.failure
-import fairu.backend.file.File
+import fairu.shared.file.File
 import fairu.backend.routes.users.tokens.tokens
-import fairu.backend.user.CensoringUserSerializer
-import fairu.backend.user.User
-import fairu.backend.user.UserPrincipal
-import fairu.backend.user.access.AccessScope
-import fairu.backend.user.access.scopedAccess
+import fairu.shared.user.CensoringUserSerializer
+import fairu.shared.user.User
+import fairu.shared.user.UserPrincipal
+import fairu.shared.user.access.AccessScope
+import fairu.shared.user.access.scopedAccess
 import fairu.backend.utils.Snowflake
 import fairu.backend.utils.ext.respond
 import io.ktor.http.*

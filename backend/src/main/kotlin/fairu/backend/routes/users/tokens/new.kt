@@ -2,8 +2,8 @@ package fairu.backend.routes.users.tokens
 
 import fairu.backend.routes.users.logPrefix
 import fairu.backend.routes.users.user
-import fairu.backend.user.access.AccessScope
-import fairu.backend.user.access.AccessToken
+import fairu.shared.user.access.AccessScope
+import fairu.shared.user.access.AccessToken
 import fairu.backend.utils.auth.Token
 import fairu.backend.utils.ext.log
 import fairu.backend.utils.ext.respond

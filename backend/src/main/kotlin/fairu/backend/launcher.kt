@@ -8,10 +8,10 @@ import fairu.backend.routes.files.files
 import fairu.backend.routes.image
 import fairu.backend.routes.session
 import fairu.backend.routes.users.users
-import fairu.backend.user.Session
-import fairu.backend.user.UserPrincipal
-import fairu.backend.user.access.AccessToken
-import fairu.backend.user.session.UserSession
+import fairu.shared.user.Session
+import fairu.shared.user.UserPrincipal
+import fairu.shared.user.access.AccessToken
+import fairu.shared.user.session.UserSession
 import fairu.backend.utils.*
 import fairu.backend.utils.auth.Token
 import fairu.backend.utils.awt.registerFonts

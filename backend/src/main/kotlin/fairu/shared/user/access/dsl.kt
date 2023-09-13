@@ -1,7 +1,7 @@
-package fairu.backend.user.access
+package fairu.shared.user.access
 
-import fairu.backend.user.User
-import fairu.backend.user.UserPrincipal
+import fairu.shared.user.User
+import fairu.shared.user.UserPrincipal
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*

@@ -53,6 +53,7 @@ dependencies {
 
     // extensions
     implementation("naibu.stdlib:naibu-koin:$naibu")
+    implementation("naibu.stdlib:naibu-ktor-client:$naibu")
     implementation("naibu.stdlib:naibu-ktor-server:$naibu")
     implementation("naibu.stdlib:naibu-scrimage:$naibu")
 

@@ -1,6 +1,6 @@
-package fairu.backend.user.session
+package fairu.shared.user.session
 
-import fairu.backend.user.UserReference
+import fairu.shared.user.UserReference
 import fairu.backend.utils.Snowflake
 import fairu.backend.utils.mongo.DocumentClass
 import fairu.backend.utils.mongo.SnowflakeDocument
