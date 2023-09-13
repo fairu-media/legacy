@@ -1,1 +1,0 @@
-export const backendUrl  = process.env.NEXT_PUBLIC_FAIRU_BACKEND_URL as string;

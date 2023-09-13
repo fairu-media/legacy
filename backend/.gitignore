@@ -1,6 +1,0 @@
-.gradle/
-
-node_modules/
-build/
-
-src/main/resources/static/styles.css

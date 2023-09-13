@@ -6,14 +6,19 @@ host = "0.0.0.0"
 port = 3232
 
 [fairu.s3]
-endpoint   = "http://127.0.0.1:9000"
+path-style-access-enabled = true
+endpoint   = "https://s3.2d.gay"
+region     = "us-west-2"
 bucket     = "fairu"
-access-key = "fairu"
-secret-key = "password"
+access-key = ""
+secret-key = ""
+
+bucket = "fairu"
+region = "us-west-2"
 
 [fairu.jwt]
-secret = "example secret"
+secret = "super secret key"
 
 [fairu.db]
-uri = "mongodb://localhost:27017/?retryWrites=true"
+uri           = "mongodb://127.0.0.1:27017"
 database-name = "fairu"

@@ -1,11 +1,7 @@
-## IDEs
-
-# intellij
+.gradle/
 .idea/
-out/
 
-# vscode
-.vscode/
+node_modules/
+build/
 
-# fleet
-.fleet/
+src/main/resources/static/styles.css
