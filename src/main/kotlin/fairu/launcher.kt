@@ -54,8 +54,8 @@ import org.litote.kmongo.eq
 import kotlin.io.path.Path
 import kotlin.io.path.readText
 
-val log by logging("fairu.backend.application")
-val configPath = System.getProperty("fairu.backend.config-path") ?: "fairu.toml"
+val log by logging("fairu.application")
+val configPath = System.getProperty("fairu.config-path") ?: "fairu.toml"
 
 suspend fun main() {
     log.info { "! Starting Fairu v${Version.FULL}" }

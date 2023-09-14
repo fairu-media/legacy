@@ -17,7 +17,7 @@ import org.litote.kmongo.reactivestreams.KMongo
 import org.overviewproject.mime_types.MimeTypeDetector
 
 val fairuModule = module {
-    val log by logging("fairu.backend.dependencies")
+    val log by logging("fairu.dependencies")
 
     single { HttpClientTools.createDefaultHttpClient() }
 

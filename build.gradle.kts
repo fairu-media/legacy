@@ -10,11 +10,10 @@ plugins {
 }
 
 group = "fairu.backend"
-version = "2.0"
+version = "2.1"
 
 application {
-    mainClass.set("fairu.backend.LauncherKt")
-    applicationDefaultJvmArgs = listOf("-Dio.ktor.development=true")
+    mainClass = "fairu.LauncherKt"
 }
 
 repositories {
@@ -106,6 +105,6 @@ tasks {
     }
 
     compileKotlin {
-        compilerOptions.jvmTarget.set(JvmTarget.JVM_17)
+        compilerOptions.jvmTarget = JvmTarget.JVM_17
     }
 }

@@ -1,10 +1,10 @@
 {
-  "name": "fairu-backend",
-  "scripts": {
-    "tw": "bun x tailwindcss -i ./src/main/resources/assets/css/styles.css -o ./src/main/resources/static/styles.css",
-    "tw:dev": "bun run tw --watch"
-  },
-  "dependencies": {
-    "tailwindcss": "^3.3.3"
-  }
+    "name": "fairu-backend",
+    "scripts": {
+        "tw": "bun x tailwindcss -i ./src/main/resources/assets/css/styles.css -o ./src/main/resources/static/styles.css",
+        "tw:dev": "bun run tw --watch"
+    },
+    "dependencies": {
+        "tailwindcss": "^3.3.3"
+    }
 }
